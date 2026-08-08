@@ -284,11 +284,7 @@ if (FB_READY) {
   auth      = getAuth(app);
   db        = getFirestore(app, injected.databaseId || "indentity");
   gProvider = new GoogleAuthProvider();
-  // Already signed in? go straight to dashboard
-  onAuthStateChanged(auth, u => { if (u) window.location.href = "dashboard.html"; });
-} else {
-  // Fallback: redirect demo session if exists
-  try { if (sessionStorage.getItem("pg_session")) window.location.href = "dashboard.html"; } catch(e){}
+  // Auth initialized cleanly
 }
 
 // ── Demo users (works without Firebase) ──────────────────────

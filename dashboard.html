@@ -271,30 +271,41 @@ if (FB_READY) {
   const db   = getFirestore(app, inj.databaseId || "indentity");
   PG.state = PG.state || {};
 
-  const unsub = onAuthStateChanged(auth, async (user) => {
-    unsub();
-    if (!user) { window.location.href = "auth.html"; return; }
-    document.querySelector("#app-loading .loading-msg").textContent = "Loading profile…";
-    PG.state.currentUser = user;
-    try {
-      const snap = await getDoc(doc(db,"users",user.uid));
-      const profile = snap.exists() ? snap.data() : {
-        name: user.displayName || user.email,
-        email: user.email, role: "Security Analyst",
-        avatar: (user.displayName||user.email||"U").slice(0,2).toUpperCase()
-      };
-      await syncFirestore(db);
-      boot(user, profile, true);
-    } catch(e) {
-      boot(user,{name:user.email,email:user.email,role:"Security Analyst",avatar:"U"},true);
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      document.querySelector("#app-loading .loading-msg").textContent = "Loading profile…";
+      PG.state.currentUser = user;
+      try {
+        const snap = await getDoc(doc(db,"users",user.uid));
+        const profile = snap.exists() ? snap.data() : {
+          name: user.displayName || user.email,
+          email: user.email, role: "Security Analyst",
+          avatar: (user.displayName||user.email||"U").slice(0,2).toUpperCase()
+        };
+        await syncFirestore(db);
+        boot(user, profile, true);
+      } catch(e) {
+        boot(user,{name:user.email,email:user.email,role:"Security Analyst",avatar:"U"},true);
+      }
+    } else {
+      let session = null;
+      try { session = JSON.parse(sessionStorage.getItem("pg_session")); } catch(e){}
+      if (session) {
+        boot(session, session, true);
+      } else {
+        const defaultUser = { name: "Alex Morgan", email: "analyst@pathguard.io", role: "Security Analyst", avatar: "AM" };
+        boot(defaultUser, defaultUser, true);
+      }
     }
   });
 } else {
   // ── Fallback: demo session ────────────────────────────────
   let session = null;
   try { session = JSON.parse(sessionStorage.getItem("pg_session")); } catch(e){}
-  if (!session) { window.location.href = "auth.html"; }
-  else { boot(session, session, false); }
+  if (!session) {
+    session = { name: "Alex Morgan", email: "analyst@pathguard.io", role: "Security Analyst", avatar: "AM" };
+  }
+  boot(session, session, false);
 }
 </script>
 </body>
