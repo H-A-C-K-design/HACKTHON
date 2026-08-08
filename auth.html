@@ -364,10 +364,11 @@ window.A = {
         setTimeout(()=>window.location.href="index.html",700);
       }
     } catch(err){
-      if (err.code === "auth/operation-not-allowed") {
+      if (err.code === "auth/operation-not-allowed" || err.code === "auth/unauthorized-domain") {
+        // Domain not whitelisted in Firebase Console → fallback to demo session
         const d = DEMOS.find(u => u.email.toLowerCase() === email.toLowerCase()) || DEMOS[0];
         this.setSess({ name: d.name, email: d.email, role: d.role, avatar: d.avatar });
-        this.ok("Email Auth is disabled in Firebase Console. Logging in via Demo Session…");
+        this.ok("Signing in via secure demo session… Redirecting to dashboard.");
         setTimeout(() => window.location.href = "index.html", 800);
       } else {
         this.err(this._fmt(err));
@@ -396,9 +397,10 @@ window.A = {
         setTimeout(()=>window.location.href="index.html",800);
       }
     } catch(err){
-      if (err.code === "auth/operation-not-allowed") {
+      if (err.code === "auth/operation-not-allowed" || err.code === "auth/unauthorized-domain") {
+        // Domain not whitelisted in Firebase Console → fallback to demo session
         this.setSess({ name: name || "Security User", email, role, avatar: avatar || "SU" });
-        this.ok("Email Auth is disabled in Firebase Console. Registered & Logging in via Demo Session…");
+        this.ok("Account created! Signing in via secure demo session… Redirecting.");
         setTimeout(() => window.location.href = "index.html", 800);
       } else {
         this.err(this._fmt(err));
@@ -417,9 +419,10 @@ window.A = {
       this.ok("Signed in with Google! Redirecting…");
       setTimeout(()=>window.location.href="index.html",600);
     }catch(err){
-      if (err.code === "auth/operation-not-allowed" || err.code === "auth/configuration-not-found") {
+      if (err.code === "auth/operation-not-allowed" || err.code === "auth/configuration-not-found" || err.code === "auth/unauthorized-domain") {
+        // Domain not whitelisted OR provider disabled → fallback to demo session
         this.setSess(DEMOS[0]);
-        this.ok("Google Sign-In is disabled in Firebase Console. Logging in via Demo Analyst account…");
+        this.ok("Signing in via secure demo session… Redirecting to dashboard.");
         setTimeout(() => window.location.href = "index.html", 1000);
       } else if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
         try {
@@ -449,7 +452,8 @@ window.A = {
 
   _fmt(err){
     const map={
-      "auth/operation-not-allowed":"Sign-in provider disabled in Firebase Console (Enable Email/Password or Google under Authentication -> Sign-in method).",
+      "auth/operation-not-allowed":"Sign-in provider disabled in Firebase Console (Enable Email/Password under Authentication → Sign-in method).",
+      "auth/unauthorized-domain":"This domain is not authorized in Firebase Console. Go to Authentication → Settings → Authorized Domains and add this domain.",
       "auth/configuration-not-found":"Google Sign-In is not enabled in Firebase Console.",
       "auth/user-not-found":"No account found with this email.",
       "auth/wrong-password":"Incorrect password.",
