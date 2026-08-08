@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PathGuard — Security Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">PG</div>
+    <div>
+      <div class="sidebar-logo-text">PathGuard</div>
+      <div class="sidebar-logo-sub">Attack Path Intel</div>
+    </div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="PG.Router.go('dashboard')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Dashboard
+    </div>
+
+    <div class="sidebar-section-label">Threat Intelligence</div>
+    <div class="nav-item" id="nav-attack-paths" onclick="PG.Router.go('attack-paths')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L8 3l5 10"/><path d="M5.5 9h5"/></svg>
+      Attack Paths
+      <span class="nav-badge">37</span>
+    </div>
+    <div class="nav-item" id="nav-simulator" onclick="PG.Router.go('simulator')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M6 5l5 3-5 3V5z"/></svg>
+      Compromise Simulator
+    </div>
+    <div class="nav-item" id="nav-risk" onclick="PG.Router.go('risk')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2L2 14h12L8 2z"/><line x1="8" y1="7" x2="8" y2="10"/><circle cx="8" cy="12.5" r="0.75" fill="currentColor"/></svg>
+      Risk Analysis
+      <span class="nav-badge high">12</span>
+    </div>
+
+    <div class="sidebar-section-label">Identity</div>
+    <div class="nav-item" id="nav-identities" onclick="PG.Router.go('identities')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      Identities
+    </div>
+    <div class="nav-item" id="nav-groups" onclick="PG.Router.go('groups')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><path d="M1 14c0-2.8 1.8-5 4-5"/><path d="M11 9c2.2 0 4 2.2 4 5"/><path d="M5 9c1.6-1 4.4-1 6 0"/></svg>
+      Groups &amp; Permissions
+    </div>
+    <div class="nav-item" id="nav-cloud-roles" onclick="PG.Router.go('cloud-roles')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10a3 3 0 0 1 0-6 4 4 0 0 1 8 1 3 3 0 0 1 0 5"/><path d="M6 12l2 2 2-2M8 14V9"/></svg>
+      Cloud Roles
+    </div>
+    <div class="nav-item" id="nav-assets" onclick="PG.Router.go('assets')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1"/><path d="M5 7h6M5 10h4"/></svg>
+      Critical Assets
+    </div>
+
+    <div class="sidebar-section-label">Operations</div>
+    <div class="nav-item" id="nav-remediation" onclick="PG.Router.go('remediation')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l3 3 7-7"/><circle cx="8" cy="8" r="6"/></svg>
+      Remediation
+    </div>
+    <div class="nav-item" id="nav-reports" onclick="PG.Router.go('reports')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="1" width="10" height="14" rx="1"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8" y2="11"/></svg>
+      Reports
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div id="sidebar-avatar" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">SA</div>
+      <div style="min-width:0">
+        <div id="sidebar-user-name" style="font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">User</div>
+        <div id="sidebar-user-role" style="font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Role</div>
+      </div>
+    </div>
+    <div class="env-badge"><span class="env-dot"></span>Analysis Mode</div>
+    <button onclick="PG.logout()" style="width:100%;margin-top:8px;padding:7px;background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:6px;font-size:11px;font-family:var(--font);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Sign Out</button>
+  </div>
+</nav>
+
+<!-- ═══════ TOPBAR ═══════ -->
+<header id="topbar">
+  <button id="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;background:none;border:none;color:var(--text-secondary);cursor:pointer;padding:4px;margin-right:8px">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="4" x2="15" y2="4"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="12" x2="15" y2="12"/></svg>
+  </button>
+  <div class="topbar-search">
+    <svg class="topbar-search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+    <input type="text" id="search-input" placeholder="Search identities, paths, assets…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div class="topbar-right">
+    <!-- Firebase status chip -->
+    <div id="fb-chip" class="fb-chip off" title="Firebase connection status">
+      <span class="fb-chip-dot"></span>
+      <span id="fb-chip-label">Demo</span>
+    </div>
+    <div class="topbar-env"><div class="topbar-env-dot"></div>Security Snapshot</div>
+    <div style="position:relative">
+      <div class="topbar-icon-btn" id="notif-btn" onclick="PG.Notifications.toggle()" aria-label="Notifications">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a5 5 0 0 1 5 5v3l1.5 1.5H1.5L3 10V7a5 5 0 0 1 5-5z"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="notif-dropdown" id="notif-dropdown"></div>
+    </div>
+    <div class="user-menu-wrap" style="position:relative">
+      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);transition:border-color .15s" onclick="document.getElementById('user-menu').classList.toggle('open')" onmouseover="this.style.borderColor='var(--border-light)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div id="topbar-avatar" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">SA</div>
+        <div><div id="topbar-user-name" style="font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis">User</div>
+        <div id="topbar-user-role" style="font-size:10px;color:var(--text-muted);white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis">Role</div></div>
+        <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div id="user-menu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;width:190px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:200;overflow:hidden;padding:4px 0">
+        <div class="user-menu-item" onclick="PG.Router.go('reports')">📊 Reports</div>
+        <div class="user-menu-sep"></div>
+        <div class="user-menu-item" id="um-fb-status" style="cursor:default;font-size:11px;color:var(--text-muted)">⚙ Firebase: checking…</div>
+        <div class="user-menu-sep"></div>
+        <div class="user-menu-item danger" onclick="PG.logout()">🚪 Sign Out</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ LOADING OVERLAY ═══════ -->
+<div id="app-loading">
+  <div class="logo">PG</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+  <div class="loading-msg">Authenticating…</div>
+</div>
+
+<!-- ═══════ PAGES ═══════ -->
+<main id="main">
+  <div class="page" id="page-dashboard"></div>
+  <div class="page" id="page-attack-paths"></div>
+  <div class="page" id="page-path-detail"></div>
+  <div class="page" id="page-identities"></div>
+  <div class="page" id="page-identity-detail"></div>
+  <div class="page" id="page-groups"></div>
+  <div class="page" id="page-cloud-roles"></div>
+  <div class="page" id="page-assets"></div>
+  <div class="page" id="page-simulator"></div>
+  <div class="page" id="page-risk"></div>
+  <div class="page" id="page-remediation"></div>
+  <div class="page" id="page-reports"></div>
+</main>
+</div><!-- /#app -->
+
+<!-- ═══════ MODAL ═══════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)PG.Pages._closeModal()">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-title">Details</h2><span class="modal-close" onclick="PG.Pages._closeModal()">&#x2715;</span></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script src="js/firebase-config.js" onerror="console.warn('firebase-config.js not found — start server with serve.ps1')"></script>
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/graph.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/app.js"></script>
+
+<!-- ═══════ FIREBASE AUTH MODULE ═══════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── Config: loaded from .env via serve.ps1 → /js/firebase-config.js
+const inj = window.__PATHGUARD_CONFIG__ || {};
+const FB = {
+  projectId:         "identity-security-58adc",
+  authDomain:        "identity-security-58adc.firebaseapp.com",
+  storageBucket:     "identity-security-58adc.appspot.com",
+  apiKey:            inj.apiKey            || "PASTE_API_KEY_HERE",
+  messagingSenderId: inj.messagingSenderId || "PASTE_SENDER_ID_HERE",
+  appId:             inj.appId             || "PASTE_APP_ID_HERE",
+};
+const FB_PLACEHOLDERS = ["","PASTE_YOUR_WEB_API_KEY_HERE","PASTE_YOUR_SENDER_ID_HERE","PASTE_YOUR_APP_ID_HERE","PASTE_API_KEY_HERE","PASTE_SENDER_ID_HERE","PASTE_APP_ID_HERE","YOUR_API_KEY","GET_FROM_CONSOLE"];
+const FB_READY = !!FB.apiKey && !FB_PLACEHOLDERS.includes(FB.apiKey) && !!FB.appId && !FB_PLACEHOLDERS.includes(FB.appId);
+
+// ── PG.logout wired to Firebase ──────────────────────────────
+window.PG = window.PG || {};
+PG.logout = async () => {
+  if (FB_READY) { try { await signOut(getAuth()); } catch(e){} }
+  sessionStorage.clear();
+  window.location.href = "home.html";
+};
+
+// ── Save simulation to Firestore ─────────────────────────────
+window.PG_saveSimulation = async (result) => {
+  if (!FB_READY || !window.PG?.state?.currentUser?.uid) return;
+  try {
+    const db = getFirestore(undefined, inj.databaseId || "indentity");
+    await addDoc(collection(db,"simulations"), {
+      uid:          PG.state.currentUser.uid,
+      identityId:   result.identity.id,
+      identityName: result.identity.name,
+      maxRisk:      result.maxRisk,
+      criticalPaths:result.criticalPaths,
+      reachableAssets: result.reachableAssets,
+      escalations:  result.escalationOpportunities,
+      accessType:   result.accessType  || "phishing",
+      targetScope:  result.targetScope || "all",
+      createdAt:    serverTimestamp()
+    });
+    PG.UI?.showToast("Simulation saved to Firestore ✓", "success");
+  } catch(e){ console.warn("Firestore save failed:", e.message); }
+};
+
+// ── Seed & Sync Firestore ─────────────────────────────────────
+async function syncFirestore(db) {
+  const { doc, getDoc, getDocs, collection, writeBatch, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+  try {
+    const meta = await getDoc(doc(db,"meta","seeded"));
+    if (!meta.exists()) {
+      console.log("[PathGuard] Seeding Firestore with initial dataset…");
+      const b = writeBatch(db);
+      PG.identities.forEach(i => b.set(doc(db,"identities",i.id),{...i}));
+      PG.groups.forEach(g    => b.set(doc(db,"groups",g.id),{...g}));
+      PG.assets.forEach(a    => b.set(doc(db,"assets",a.id),{...a}));
+      PG.cloudRoles.forEach(r=> b.set(doc(db,"cloudRoles",r.id),{...r}));
+      PG.attackPaths.forEach(p=> b.set(doc(db,"attackPaths",p.id),{id:p.id,severity:p.severity,sourceId:p.sourceId,sourceName:p.sourceName,targetId:p.targetId,targetName:p.targetName,hops:p.hops,risk:p.risk,status:p.status,description:p.description}));
+      b.set(doc(db,"kpis","latest"),{...PG.kpis,updatedAt:serverTimestamp()});
+      b.set(doc(db,"meta","seeded"),{at:serverTimestamp(),version:"1.0"});
+      await b.commit();
+      console.log("[PathGuard] Firestore seeded ✓");
+    }
+  } catch(e) { console.warn("[PathGuard] Seed check:", e.message); }
+
+  try {
+    const idsSnap = await getDocs(collection(db,"identities"));
+    if (!idsSnap.empty) PG.identities = idsSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const pathsSnap = await getDocs(collection(db,"attackPaths"));
+    if (!pathsSnap.empty) PG.attackPaths = pathsSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const assetsSnap = await getDocs(collection(db,"assets"));
+    if (!assetsSnap.empty) PG.assets = assetsSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const groupsSnap = await getDocs(collection(db,"groups"));
+    if (!groupsSnap.empty) PG.groups = groupsSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const rolesSnap = await getDocs(collection(db,"cloudRoles"));
+    if (!rolesSnap.empty) PG.cloudRoles = rolesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    console.log("[PathGuard] Firestore live sync active ✓");
+  } catch(e) { console.warn("[PathGuard] Firestore sync:", e.message); }
+}
+
+// ── Boot ──────────────────────────────────────────────────────
+function boot(user, profile, fbConnected) {
+  PG.state = PG.state || {};
+  PG.state.currentUser = user;
+  PG.state.userProfile = profile;
+  PG.UI?.setFbChip(fbConnected);
+  PG.UI?.setUser(profile);
+  PG.UI?.hideLoading();
+  PG.boot(user, profile, fbConnected);
+}
+
+if (FB_READY) {
+  const app  = initializeApp(FB);
+  const auth = getAuth(app);
+  const db   = getFirestore(app, inj.databaseId || "indentity");
+  PG.state = PG.state || {};
+
+  const unsub = onAuthStateChanged(auth, async (user) => {
+    unsub();
+    if (!user) { window.location.href = "auth.html"; return; }
+    document.querySelector("#app-loading .loading-msg").textContent = "Loading profile…";
+    PG.state.currentUser = user;
+    try {
+      const snap = await getDoc(doc(db,"users",user.uid));
+      const profile = snap.exists() ? snap.data() : {
+        name: user.displayName || user.email,
+        email: user.email, role: "Security Analyst",
+        avatar: (user.displayName||user.email||"U").slice(0,2).toUpperCase()
+      };
+      await syncFirestore(db);
+      boot(user, profile, true);
+    } catch(e) {
+      boot(user,{name:user.email,email:user.email,role:"Security Analyst",avatar:"U"},true);
+    }
+  });
+} else {
+  // ── Fallback: demo session ────────────────────────────────
+  let session = null;
+  try { session = JSON.parse(sessionStorage.getItem("pg_session")); } catch(e){}
+  if (!session) { window.location.href = "auth.html"; }
+  else { boot(session, session, false); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "name": "pathguard",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/js/firebase-config.js", "destination": "/api/firebase-config" },
+    { "source": "/", "destination": "/home.html" }
+  ]
+}
