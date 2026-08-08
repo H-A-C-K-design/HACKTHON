@@ -401,7 +401,10 @@ window.A = {
       this.ok("Signed in with Google! Redirecting…");
       setTimeout(()=>window.location.href="dashboard.html",600);
     }catch(err){
-      if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
+      if (err.code === "auth/configuration-not-found") {
+        this.ok("Google Sign-In is disabled in Firebase Console. Logging in via Demo Analyst account…");
+        setTimeout(() => this.demo("analyst@pathguard.io", "Demo@1234"), 1200);
+      } else if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
         try {
           this.ok("Browser blocked popup window. Redirecting to Google Sign-In…");
           await signInWithRedirect(auth, gProvider);
@@ -428,7 +431,18 @@ window.A = {
   },
 
   _fmt(err){
-    const map={"auth/user-not-found":"No account found with this email.","auth/wrong-password":"Incorrect password.","auth/email-already-in-use":"An account with this email already exists.","auth/invalid-email":"Please enter a valid email address.","auth/weak-password":"Password must be at least 6 characters.","auth/too-many-requests":"Too many attempts. Please wait and try again.","auth/popup-closed-by-user":"Google sign-in was cancelled.","auth/network-request-failed":"Network error. Check your connection.","auth/invalid-credential":"Invalid email or password."};
+    const map={
+      "auth/configuration-not-found":"Google Sign-In is not enabled in Firebase Console. (Enable 'Google' in Firebase Console -> Authentication -> Sign-in method, or use a Demo account below).",
+      "auth/user-not-found":"No account found with this email.",
+      "auth/wrong-password":"Incorrect password.",
+      "auth/email-already-in-use":"An account with this email already exists.",
+      "auth/invalid-email":"Please enter a valid email address.",
+      "auth/weak-password":"Password must be at least 6 characters.",
+      "auth/too-many-requests":"Too many attempts. Please wait and try again.",
+      "auth/popup-closed-by-user":"Google sign-in was cancelled.",
+      "auth/network-request-failed":"Network error. Check your connection.",
+      "auth/invalid-credential":"Invalid email or password."
+    };
     return map[err.code]||err.message||"An unexpected error occurred.";
   },
 };
