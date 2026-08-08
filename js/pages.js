@@ -18,9 +18,24 @@ PG.Pages.renderDashboard=function(){
   document.getElementById("page-dashboard").innerHTML=`
   <div class="page-header"><div class="page-header-row">
     <div><h1>Identity Security Command Center</h1><p>Continuous analysis of identity relationships, privilege escalation paths, and critical asset exposure.</p></div>
-    <div class="flex-row"><span class="tag">Last analysis: 08 Aug 2026, 14:52 UTC</span>
+    <div class="flex-row"><span class="tag">Live Firestore Connected ✓</span>
     <button class="btn btn-primary" onclick="PG.Router.go('simulator')">⚡ Simulate Compromise</button></div>
   </div></div>
+
+  <!-- Quick Operations Toolbar -->
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+      <span style="color:var(--accent-blue)">⚡ Quick Actions:</span>
+      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('simulator')">⚡ Run Simulation</button>
+      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('identities')">👤 View Identities</button>
+      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('paths')">🎯 Attack Paths</button>
+      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('remediation')">🛡️ Remediation</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="text" placeholder="Search identity or asset..." style="background:var(--bg-surface);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--text-primary);width:200px" onkeyup="if(event.key==='Enter'){PG.Router.go('identities');setTimeout(()=>{const el=document.getElementById('ident-search');if(el){el.value=this.value;el.dispatchEvent(new Event('input'))}},100)}">
+    </div>
+  </div>
+
   <div class="kpi-grid">
     <div class="kpi-card"><div class="kpi-label">Total Identities</div><div class="kpi-value">${k.totalIdentities.toLocaleString()}</div><div class="kpi-sub">Users, Service Accounts &amp; Cloud</div><div class="kpi-trend up">↑ 37 this week ${spk(t.totalIdentities,"#3b82f6")}</div></div>
     <div class="kpi-card warning"><div class="kpi-label">Attack Paths</div><div class="kpi-value">${k.attackPaths}</div><div class="kpi-sub">Active Attack Paths</div><div class="kpi-trend up">↑ 2 since last scan ${spk(t.attackPaths,"#eab308")}</div></div>
