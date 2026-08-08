@@ -4,10 +4,7 @@
   "cleanUrls": true,
   "routes": [
     { "src": "/js/firebase-config.js", "dest": "/api/firebase-config" },
-    { "src": "/home", "dest": "/home.html" },
-    { "src": "/auth", "dest": "/auth.html" },
-    { "src": "/dashboard", "dest": "/index.html" },
-    { "src": "^/(?!api/|js/|css/|home\\.html|auth\\.html|index\\.html).*", "dest": "/index.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
+

@@ -31,29 +31,14 @@ PG.Router = {
     "reports":         {page:"page-reports",         nav:"nav-reports",      render:()=>PG.Pages.renderReports()},
   },
   go(name) {
-    // ── If route is unknown → fallback to dashboard ──────────
-    if (!this.routes[name]) name = "dashboard";
-    const r = this.routes[name];
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    const r=this.routes[name]; if(!r) return;
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(r.page)?.classList.add("active");
-    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
     document.getElementById(r.nav)?.classList.add("active");
     r.render();
-    PG.state.currentPage = name;
-    // Update URL hash without triggering hashchange listener
-    if (location.hash !== "#" + name) {
-      history.replaceState(null, "", "#" + name);
-    }
-    window.scrollTo(0, 0);
-  },
-  // ── Listen for hash changes (back/forward or manual URL edit) ──
-  initHashRouting() {
-    window.addEventListener("hashchange", () => {
-      const hash = location.hash.replace("#", "").trim();
-      // If hash is empty or unknown → go to dashboard
-      const target = this.routes[hash] ? hash : "dashboard";
-      this.go(target);
-    });
+    PG.state.currentPage=name;
+    window.scrollTo(0,0);
   },
 };
 
@@ -159,12 +144,5 @@ PG.boot = function(user, profile, firebaseReady) {
   // Mobile sidebar toggle
   if(window.innerWidth<=768) document.getElementById("sidebar-toggle")?.style?.setProperty("display","flex");
 
-  // ── URL Guard: hash-based routing ────────────────────────────
-  // Register listener for back/forward & manual hash edits
-  PG.Router.initHashRouting();
-
-  // Navigate to the hash in URL (if valid), else go to dashboard
-  const startHash = location.hash.replace("#", "").trim();
-  const startPage = PG.Router.routes[startHash] ? startHash : "dashboard";
-  PG.Router.go(startPage);
+  PG.Router.go("dashboard");
 };
