@@ -168,9 +168,9 @@ body{display:flex;min-height:100vh;overflow-x:hidden}
   <a href="home.html" class="back-link">← Back to home</a>
 
   <!-- Firebase status badge -->
-  <div id="fb-status" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:11px;margin-bottom:20px;background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.25);color:#eab308">
-    <div id="fb-dot" style="width:7px;height:7px;border-radius:50%;background:currentColor"></div>
-    <span id="fb-status-text">Checking Firebase connection…</span>
+  <div id="fb-status" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:20px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.1)">
+    <div id="fb-dot" style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></div>
+    <span id="fb-status-text">Firebase Live Sync Connected</span>
   </div>
 
   <div class="auth-header">
@@ -287,9 +287,10 @@ const statusTxt = document.getElementById("fb-status-text");
 const statusDot = document.getElementById("fb-dot");
 if (FB_READY) {
   Object.assign(statusEl.style, {background:"rgba(34,197,94,.08)",borderColor:"rgba(34,197,94,.25)",color:"#22c55e"});
-  statusTxt.textContent = "Firebase connected — project: " + FB.projectId;
+  statusTxt.textContent = "Firebase Live Sync Connected (" + FB.projectId + ")";
 } else {
-  statusTxt.textContent = "Demo mode — add API key to .env to enable Firebase Auth";
+  Object.assign(statusEl.style, {background:"rgba(234,179,8,.08)",borderColor:"rgba(234,179,8,.25)",color:"#eab308"});
+  statusTxt.textContent = "Demo Session Active (Offline Mode)";
 }
 
 // ── Init Firebase ─────────────────────────────────────────────
