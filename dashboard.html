@@ -286,8 +286,15 @@ if (FB_READY) {
   const db   = getFirestore(app, inj.databaseId || "indentity");
   PG.state = PG.state || {};
 
+  // ── AUTH GUARD: show loading until we know who the user is ──
+  let authResolved = false;
+
   onAuthStateChanged(auth, async (user) => {
+    if (authResolved) return; // only run once
+    authResolved = true;
+
     if (user) {
+      // ✅ Firebase authenticated user
       document.querySelector("#app-loading .loading-msg").textContent = "Loading profile…";
       PG.state.currentUser = user;
       try {
@@ -303,24 +310,32 @@ if (FB_READY) {
         boot(user,{name:user.email,email:user.email,role:"Security Analyst",avatar:"U"},true);
       }
     } else {
+      // ❌ No Firebase session — check for Demo session
       let session = null;
       try { session = JSON.parse(sessionStorage.getItem("pg_session")); } catch(e){}
-      if (session) {
-        boot(session, session, true);
+
+      if (session && session.email) {
+        // ✅ Valid demo/local session exists
+        boot(session, session, false);
       } else {
-        const defaultUser = { name: "Alex Morgan", email: "analyst@pathguard.io", role: "Security Analyst", avatar: "AM" };
-        boot(defaultUser, defaultUser, true);
+        // 🚫 No auth at all — redirect to login
+        window.location.replace("auth.html");
       }
     }
   });
+
 } else {
-  // ── Fallback: demo session ────────────────────────────────
+  // ── Fallback: No Firebase — require demo session ───────────
   let session = null;
   try { session = JSON.parse(sessionStorage.getItem("pg_session")); } catch(e){}
-  if (!session) {
-    session = { name: "Alex Morgan", email: "analyst@pathguard.io", role: "Security Analyst", avatar: "AM" };
+
+  if (session && session.email) {
+    // ✅ Valid demo session
+    boot(session, session, false);
+  } else {
+    // 🚫 No session — redirect to login
+    window.location.replace("auth.html");
   }
-  boot(session, session, false);
 }
 </script>
 </body>
