@@ -308,7 +308,7 @@ if (FB_READY) {
         const n = cred.user.displayName || "Google User";
         await setDoc(ref, { uid: cred.user.uid, name: n, email: cred.user.email, role: "Security Analyst", avatar: n.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(), createdAt: serverTimestamp() });
       }
-      window.location.href = "dashboard.html";
+      window.location.href = "index.html";
     }
   }).catch(() => {});
 }
@@ -361,14 +361,14 @@ window.A = {
         const d=DEMOS.find(u=>u.email.toLowerCase()===email.toLowerCase()&&u.password===pass);
         if(!d) throw new Error("Invalid email or password. Use a demo account below.");
         this.setSess(d); this.ok("Signed in! Redirecting…");
-        setTimeout(()=>window.location.href="dashboard.html",700);
+        setTimeout(()=>window.location.href="index.html",700);
       }
     } catch(err){
       if (err.code === "auth/operation-not-allowed") {
         const d = DEMOS.find(u => u.email.toLowerCase() === email.toLowerCase()) || DEMOS[0];
         this.setSess({ name: d.name, email: d.email, role: d.role, avatar: d.avatar });
         this.ok("Email Auth is disabled in Firebase Console. Logging in via Demo Session…");
-        setTimeout(() => window.location.href = "dashboard.html", 800);
+        setTimeout(() => window.location.href = "index.html", 800);
       } else {
         this.err(this._fmt(err));
       }
@@ -393,13 +393,13 @@ window.A = {
         await new Promise(r=>setTimeout(r,700));
         this.setSess({name,email,role,avatar});
         this.ok("Account created! Redirecting…");
-        setTimeout(()=>window.location.href="dashboard.html",800);
+        setTimeout(()=>window.location.href="index.html",800);
       }
     } catch(err){
       if (err.code === "auth/operation-not-allowed") {
         this.setSess({ name: name || "Security User", email, role, avatar: avatar || "SU" });
         this.ok("Email Auth is disabled in Firebase Console. Registered & Logging in via Demo Session…");
-        setTimeout(() => window.location.href = "dashboard.html", 800);
+        setTimeout(() => window.location.href = "index.html", 800);
       } else {
         this.err(this._fmt(err));
       }
@@ -415,12 +415,12 @@ window.A = {
       const ref=doc(db,"users",cred.user.uid),snap=await getDoc(ref);
       if(!snap.exists()){const n=cred.user.displayName||"Google User";await setDoc(ref,{uid:cred.user.uid,name:n,email:cred.user.email,role:"Security Analyst",avatar:n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),createdAt:serverTimestamp()});}
       this.ok("Signed in with Google! Redirecting…");
-      setTimeout(()=>window.location.href="dashboard.html",600);
+      setTimeout(()=>window.location.href="index.html",600);
     }catch(err){
       if (err.code === "auth/operation-not-allowed" || err.code === "auth/configuration-not-found") {
         this.setSess(DEMOS[0]);
         this.ok("Google Sign-In is disabled in Firebase Console. Logging in via Demo Analyst account…");
-        setTimeout(() => window.location.href = "dashboard.html", 1000);
+        setTimeout(() => window.location.href = "index.html", 1000);
       } else if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
         try {
           this.ok("Browser blocked popup window. Redirecting to Google Sign-In…");
