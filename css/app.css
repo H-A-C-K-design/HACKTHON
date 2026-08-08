@@ -38,7 +38,18 @@ body{font-family:var(--font);background:var(--bg-base);color:var(--text-primary)
 /* SIDEBAR */
 #sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg-surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;transition:transform .25s ease}
 .sidebar-logo{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;min-height:var(--topbar-h)}
-.sidebar-logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.sidebar-logo-icon, .nav-logo-icon, .brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #0f1f38, #071221);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.3);
+  flex-shrink: 0;
+}
 .sidebar-logo-text{font-size:15px;font-weight:700;color:var(--text-primary)}
 .sidebar-logo-sub{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
 .sidebar-nav{flex:1;padding:10px 0;overflow-y:auto}
