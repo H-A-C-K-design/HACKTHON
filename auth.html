@@ -269,12 +269,13 @@ import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
 // If running without serve.ps1, paste your web app values here directly.
 const injected = window.__PATHGUARD_CONFIG__ || {};
 const FB = {
-  projectId:         "identity-security-58adc",
-  authDomain:        "identity-security-58adc.firebaseapp.com",
-  storageBucket:     "identity-security-58adc.appspot.com",
-  apiKey:            injected.apiKey            || "PASTE_API_KEY_HERE",
-  messagingSenderId: injected.messagingSenderId || "PASTE_SENDER_ID_HERE",
-  appId:             injected.appId             || "PASTE_APP_ID_HERE",
+  projectId:         injected.projectId         || "identity-security-58adc",
+  authDomain:        injected.authDomain        || "identity-security-58adc.firebaseapp.com",
+  storageBucket:     injected.storageBucket     || "identity-security-58adc.firebasestorage.app",
+  apiKey:            injected.apiKey            || "AIzaSyCW6Yt-YON91wS9d830oCsBu65KqpdrPnQ",
+  messagingSenderId: injected.messagingSenderId || "905091909481",
+  appId:             injected.appId             || "1:905091909481:web:f783fd453dc923919d1ff8",
+  measurementId:     injected.measurementId     || "G-77S2KQK0L0"
 };
 
 const PLACEHOLDER = ["PASTE_YOUR_WEB_API_KEY_HERE","PASTE_YOUR_SENDER_ID_HERE","PASTE_YOUR_APP_ID_HERE","PASTE_API_KEY_HERE","PASTE_SENDER_ID_HERE","PASTE_APP_ID_HERE","YOUR_API_KEY","GET_FROM_CONSOLE",""];
