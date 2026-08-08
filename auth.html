@@ -356,7 +356,6 @@ window.A = {
     try {
       if(FB_READY){
         await signInWithEmailAndPassword(auth,email,pass);
-        // onAuthStateChanged will redirect
       } else {
         await new Promise(r=>setTimeout(r,600));
         const d=DEMOS.find(u=>u.email.toLowerCase()===email.toLowerCase()&&u.password===pass);
@@ -364,7 +363,16 @@ window.A = {
         this.setSess(d); this.ok("Signed in! Redirecting…");
         setTimeout(()=>window.location.href="dashboard.html",700);
       }
-    } catch(err){this.err(this._fmt(err));}
+    } catch(err){
+      if (err.code === "auth/operation-not-allowed") {
+        const d = DEMOS.find(u => u.email.toLowerCase() === email.toLowerCase()) || DEMOS[0];
+        this.setSess({ name: d.name, email: d.email, role: d.role, avatar: d.avatar });
+        this.ok("Email Auth is disabled in Firebase Console. Logging in via Demo Session…");
+        setTimeout(() => window.location.href = "dashboard.html", 800);
+      } else {
+        this.err(this._fmt(err));
+      }
+    }
     finally{this.busy("btn-login",false);}
   },
 
@@ -381,14 +389,21 @@ window.A = {
         const cred=await createUserWithEmailAndPassword(auth,email,pass);
         await updateProfile(cred.user,{displayName:name});
         await setDoc(doc(db,"users",cred.user.uid),{uid:cred.user.uid,name,email,role,avatar,createdAt:serverTimestamp()});
-        // onAuthStateChanged redirects
       } else {
         await new Promise(r=>setTimeout(r,700));
         this.setSess({name,email,role,avatar});
         this.ok("Account created! Redirecting…");
         setTimeout(()=>window.location.href="dashboard.html",800);
       }
-    } catch(err){this.err(this._fmt(err));}
+    } catch(err){
+      if (err.code === "auth/operation-not-allowed") {
+        this.setSess({ name: name || "Security User", email, role, avatar: avatar || "SU" });
+        this.ok("Email Auth is disabled in Firebase Console. Registered & Logging in via Demo Session…");
+        setTimeout(() => window.location.href = "dashboard.html", 800);
+      } else {
+        this.err(this._fmt(err));
+      }
+    }
     finally{this.busy("btn-reg",false);}
   },
 
@@ -402,9 +417,10 @@ window.A = {
       this.ok("Signed in with Google! Redirecting…");
       setTimeout(()=>window.location.href="dashboard.html",600);
     }catch(err){
-      if (err.code === "auth/configuration-not-found") {
+      if (err.code === "auth/operation-not-allowed" || err.code === "auth/configuration-not-found") {
+        this.setSess(DEMOS[0]);
         this.ok("Google Sign-In is disabled in Firebase Console. Logging in via Demo Analyst account…");
-        setTimeout(() => this.demo("analyst@pathguard.io", "Demo@1234"), 1200);
+        setTimeout(() => window.location.href = "dashboard.html", 1000);
       } else if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
         try {
           this.ok("Browser blocked popup window. Redirecting to Google Sign-In…");
@@ -433,7 +449,8 @@ window.A = {
 
   _fmt(err){
     const map={
-      "auth/configuration-not-found":"Google Sign-In is not enabled in Firebase Console. (Enable 'Google' in Firebase Console -> Authentication -> Sign-in method, or use a Demo account below).",
+      "auth/operation-not-allowed":"Sign-in provider disabled in Firebase Console (Enable Email/Password or Google under Authentication -> Sign-in method).",
+      "auth/configuration-not-found":"Google Sign-In is not enabled in Firebase Console.",
       "auth/user-not-found":"No account found with this email.",
       "auth/wrong-password":"Incorrect password.",
       "auth/email-already-in-use":"An account with this email already exists.",
