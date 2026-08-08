@@ -285,10 +285,10 @@ if (FB_READY) {
   db        = getFirestore(app, injected.databaseId || "indentity");
   gProvider = new GoogleAuthProvider();
   // Already signed in? go straight to dashboard
-  onAuthStateChanged(auth, u => { if (u) window.location.href = "index.html"; });
+  onAuthStateChanged(auth, u => { if (u) window.location.href = "dashboard.html"; });
 } else {
   // Fallback: redirect demo session if exists
-  try { if (sessionStorage.getItem("pg_session")) window.location.href = "index.html"; } catch(e){}
+  try { if (sessionStorage.getItem("pg_session")) window.location.href = "dashboard.html"; } catch(e){}
 }
 
 // ── Demo users (works without Firebase) ──────────────────────
@@ -340,7 +340,7 @@ window.A = {
         const d=DEMOS.find(u=>u.email.toLowerCase()===email.toLowerCase()&&u.password===pass);
         if(!d) throw new Error("Invalid email or password. Use a demo account below.");
         this.setSess(d); this.ok("Signed in! Redirecting…");
-        setTimeout(()=>window.location.href="index.html",700);
+        setTimeout(()=>window.location.href="dashboard.html",700);
       }
     } catch(err){this.err(this._fmt(err));}
     finally{this.busy("btn-login",false);}
@@ -364,7 +364,7 @@ window.A = {
         await new Promise(r=>setTimeout(r,700));
         this.setSess({name,email,role,avatar});
         this.ok("Account created! Redirecting…");
-        setTimeout(()=>window.location.href="index.html",800);
+        setTimeout(()=>window.location.href="dashboard.html",800);
       }
     } catch(err){this.err(this._fmt(err));}
     finally{this.busy("btn-reg",false);}

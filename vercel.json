@@ -4,6 +4,6 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/js/firebase-config.js", "destination": "/api/firebase-config" },
-    { "source": "/", "destination": "/home.html" }
+    { "source": "/", "destination": "/index.html" }
   ]
 }
