@@ -309,8 +309,15 @@ PG.Pages._runSim=function(){
 PG.Pages._showSimResult=function(identityId,access,scope){
   const result=PG.SimulationEngine.simulate(identityId,access,scope); if(!result) return;
   PG.state.simResult=result;
+  
+  // Dynamically update KPIs based on live attack simulation
+  PG.kpis.attackPaths += result.paths.length;
+  PG.kpis.criticalPaths += result.criticalPaths;
+  PG.kpis.highRiskIdentities += (result.maxRisk >= 70 ? 1 : 0);
+
   // Save to Firestore if connected
   if(window.PG_saveSimulation) window.PG_saveSimulation(result);
+  
   document.getElementById("sim-results").innerHTML=`
   <div class="card mt-16"><div class="card-header"><svg viewBox="0 0 16 16" width="15" fill="none" stroke="#22c55e" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg><h2>Simulation Complete — ${result.identity.name}</h2>${bdg(PG.RiskEngine.getRiskLabel(result.maxRisk))}</div>
   <div class="card-body">
@@ -321,13 +328,70 @@ PG.Pages._showSimResult=function(identityId,access,scope){
       <div class="sim-result-card"><div class="sim-result-value" style="color:${PG.RiskEngine.getRiskColor(result.maxRisk)}">${result.maxRisk}</div><div class="sim-result-label">Maximum Risk</div></div>
     </div>
     ${sep()}<div class="flex-row" style="gap:10px;flex-wrap:wrap;justify-content:center">
-      <button class="btn btn-primary" onclick="PG.Pages._simPaths(false)">View All Paths</button>
+      <button class="btn btn-primary" onclick="PG.Pages.generateAttackReport()">📄 Generate & Download Security Report</button>
+      <button class="btn btn-secondary" onclick="PG.Pages._simPaths(false)">View All Paths</button>
       <button class="btn btn-secondary" onclick="PG.Pages._simPaths(true)">Critical Paths Only</button>
       <button class="btn btn-danger" onclick="PG.Router.go('remediation')">View Remediation</button>
     </div>
   </div></div>
   <div id="sim-path-list"></div>`;
 };
+
+PG.Pages.generateAttackReport=function(){
+  const res = PG.state.simResult;
+  if (!res) return;
+  const modal = document.getElementById("modal-overlay");
+  document.getElementById("modal-title").innerText = "🛡️ PathGuard Security Incident & Blast Radius Report";
+  document.getElementById("modal-body").innerHTML = `
+    <div style="font-family:var(--font);color:var(--text-primary);padding:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--accent);padding-bottom:12px;margin-bottom:16px">
+        <div>
+          <h2 style="font-size:18px;font-weight:800;color:var(--accent-blue)">ATTACK PATH BLAST RADIUS REPORT</h2>
+          <div style="font-size:11px;color:var(--text-muted)">Classification: CONFIDENTIAL · Security Intelligence Division</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:12px;font-weight:700;color:var(--critical)">RISK SCORE: ${res.maxRisk}/100</div>
+          <div style="font-size:10px;color:var(--text-muted)">Date: ${new Date().toLocaleDateString()}</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+        <h4 style="font-size:13px;color:var(--text-primary);margin-bottom:8px">1. Compromised Origin Details</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <div>Target Identity: <strong>${res.identity.name}</strong></div>
+          <div>Identity Type: <span class="tag">${res.identity.type}</span></div>
+          <div>Initial Access Vector: <strong>${res.accessType.toUpperCase()}</strong></div>
+          <div>Evaluation Scope: <strong>${res.targetScope.toUpperCase()}</strong></div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+        <h4 style="font-size:13px;color:var(--critical);margin-bottom:8px">2. Attack Chain & Blast Radius Summary</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;text-align:center">
+          <div style="background:var(--bg-card);padding:8px;border-radius:6px"><div style="font-size:18px;font-weight:800;color:var(--critical)">${res.criticalPaths}</div><div style="font-size:10px;color:var(--text-muted)">Critical Vectors</div></div>
+          <div style="background:var(--bg-card);padding:8px;border-radius:6px"><div style="font-size:18px;font-weight:800;color:var(--high)">${res.escalationOpportunities}</div><div style="font-size:10px;color:var(--text-muted)">Role Escalations</div></div>
+          <div style="background:var(--bg-card);padding:8px;border-radius:6px"><div style="font-size:18px;font-weight:800;color:var(--medium)">${res.reachableAssets}</div><div style="font-size:10px;color:var(--text-muted)">Exposed Assets</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+        <h4 style="font-size:13px;color:var(--accent-blue);margin-bottom:8px">3. Recommended Remediation Protocol</h4>
+        <ul style="font-size:12px;line-height:1.6;padding-left:20px;color:var(--text-secondary)">
+          <li>Revoke indirect group membership from <strong>App Support Group</strong> for ${res.identity.name}.</li>
+          <li>Enforce Mandatory Multi-Factor Authentication (MFA) and Session Expiry on AWS SecurityRole.</li>
+          <li>Apply Least-Privilege access controls on exposed Production Finance DB.</li>
+        </ul>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+        <button class="btn btn-secondary btn-sm" onclick="PG.Pages._closeModal()">Close</button>
+        <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Print / Download PDF Report</button>
+      </div>
+    </div>
+  `;
+  modal.classList.add("open");
+};
+
 PG.Pages._simPaths=function(critOnly){
   const result=PG.state.simResult; if(!result) return;
   const paths=critOnly?result.paths.filter(p=>p.severity==="critical"):result.paths;
