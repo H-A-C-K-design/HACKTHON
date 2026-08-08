@@ -257,7 +257,7 @@ body{display:flex;min-height:100vh;overflow-x:hidden}
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signInWithPopup, GoogleAuthProvider, onAuthStateChanged,
+         signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged,
          updateProfile, sendPasswordResetEmail }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
@@ -299,7 +299,17 @@ if (FB_READY) {
   auth      = getAuth(app);
   db        = getFirestore(app, injected.databaseId || "indentity");
   gProvider = new GoogleAuthProvider();
-  // Auth initialized cleanly
+  getRedirectResult(auth).then(async (cred) => {
+    if (cred && cred.user) {
+      const ref = doc(db, "users", cred.user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        const n = cred.user.displayName || "Google User";
+        await setDoc(ref, { uid: cred.user.uid, name: n, email: cred.user.email, role: "Security Analyst", avatar: n.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(), createdAt: serverTimestamp() });
+      }
+      window.location.href = "dashboard.html";
+    }
+  }).catch(() => {});
 }
 
 // ── Demo users (works without Firebase) ──────────────────────
@@ -388,7 +398,18 @@ window.A = {
       const cred=await signInWithPopup(auth,gProvider);
       const ref=doc(db,"users",cred.user.uid),snap=await getDoc(ref);
       if(!snap.exists()){const n=cred.user.displayName||"Google User";await setDoc(ref,{uid:cred.user.uid,name:n,email:cred.user.email,role:"Security Analyst",avatar:n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),createdAt:serverTimestamp()});}
-    }catch(err){this.err(this._fmt(err));}
+      this.ok("Signed in with Google! Redirecting…");
+      setTimeout(()=>window.location.href="dashboard.html",600);
+    }catch(err){
+      if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
+        try {
+          this.ok("Browser blocked popup window. Redirecting to Google Sign-In…");
+          await signInWithRedirect(auth, gProvider);
+        } catch(reErr) { this.err(this._fmt(reErr)); }
+      } else {
+        this.err(this._fmt(err));
+      }
+    }
   },
 
   async forgotPw(){
