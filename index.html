@@ -171,7 +171,7 @@
 
 <!-- ═══════ FIREBASE AUTH MODULE ═══════ -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp }
@@ -202,7 +202,7 @@ PG.logout = async () => {
 window.PG_saveSimulation = async (result) => {
   if (!FB_READY || !window.PG?.state?.currentUser?.uid) return;
   try {
-    const db = getFirestore(undefined, inj.databaseId || "indentity");
+    const db = getFirestore(getApp(), inj.databaseId || "indentity");
     await addDoc(collection(db,"simulations"), {
       uid:          PG.state.currentUser.uid,
       identityId:   result.identity.id,
