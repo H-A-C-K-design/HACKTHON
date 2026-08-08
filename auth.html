@@ -4,269 +4,390 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PathGuard — Sign In</title>
+<meta name="description" content="Sign in to PathGuard Security Console — Identity Attack Path Intelligence Platform.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#050d1a;--bg2:#071221;--surface:#0f1f38;--surface2:#142544;
-  --border:#1a3050;--border2:#1e3a5f;--border-focus:#3b82f6;
-  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
-  --blue:#3b82f6;--blue2:#2563eb;--blue-glow:rgba(59,130,246,.25);
-  --red:#ef4444;--green:#22c55e;
-  --radius:12px;--radius-sm:8px;
+  --bg:#f8fafc;
+  --surface:#ffffff;
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  --border-focus:#3b82f6;
+  --text:#0f172a;
+  --text2:#334155;
+  --text3:#64748b;
+  --text4:#94a3b8;
+  --blue:#3b82f6;
+  --blue2:#2563eb;
+  --blue3:#1d4ed8;
+  --blue-light:#eff6ff;
+  --red:#ef4444;
+  --green:#22c55e;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);
+  --shadow:0 4px 12px rgba(0,0,0,.08);
+  --shadow-md:0 10px 30px rgba(0,0,0,.1);
 }
 html,body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text)}
 body{display:flex;min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:3px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-/* SPLIT LAYOUT */
-.auth-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;min-height:100vh;position:relative;overflow:hidden}
-.auth-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 40%,rgba(59,130,246,.12),transparent),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(239,68,68,.06),transparent)}
-.auth-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+/* ── LAYOUT ──────────────────────────────────────────── */
+.auth-wrap{display:flex;width:100%;min-height:100vh}
+.auth-left{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 48px;position:relative;overflow:hidden;background:linear-gradient(145deg,#0f172a 0%,#1e3a5f 50%,#1e1b4b 100%)}
+.auth-right{width:480px;flex-shrink:0;background:var(--surface);display:flex;flex-direction:column;justify-content:center;padding:48px 48px;min-height:100vh;border-left:1px solid var(--border);box-shadow:-20px 0 60px rgba(0,0,0,.08)}
 
-.auth-right{width:480px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:48px 40px;min-height:100vh}
-@media(max-width:900px){.auth-left{display:none}.auth-right{width:100%;border-left:none;padding:32px 24px}}
+/* Decorative bg */
+.auth-bg{position:absolute;inset:0;pointer-events:none}
+.auth-orb1{position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%)}
+.auth-orb2{position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%)}
+.auth-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
 
-/* BRAND PANEL */
-.brand-wrap{position:relative;z-index:1;max-width:480px;text-align:center}
-.brand-logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:40px}
-.brand-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;box-shadow:0 4px 20px rgba(59,130,246,.4)}
-.brand-name{font-size:22px;font-weight:800;color:var(--text)}
-.brand-sub{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
-.brand-tagline{font-size:clamp(20px,3vw,32px);font-weight:800;letter-spacing:-1px;line-height:1.2;margin-bottom:16px;color:var(--text)}
-.brand-tagline span{background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.brand-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:40px}
-.brand-features{display:flex;flex-direction:column;gap:12px;text-align:left}
-.bf-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)}
-.bf-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+/* ── LEFT PANEL CONTENT ───────────────────────────────── */
+.left-content{position:relative;z-index:1;max-width:440px;width:100%}
+.left-logo{display:flex;align-items:center;gap:12px;margin-bottom:48px}
+.left-logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 8px 20px rgba(59,130,246,.4)}
+.left-logo-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.left-logo-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1.2px;text-transform:uppercase}
+.left-tagline{font-size:clamp(24px,2.5vw,36px);font-weight:800;letter-spacing:-1.2px;line-height:1.2;color:#fff;margin-bottom:16px}
+.left-tagline span{background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.left-desc{font-size:15px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:48px}
+.left-features{display:flex;flex-direction:column;gap:14px}
+.left-feature{display:flex;align-items:center;gap:14px}
+.left-feature-check{width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.left-feature-text{font-size:13px;color:rgba(255,255,255,.6);line-height:1.5}
+.left-feature-text strong{color:rgba(255,255,255,.9);font-weight:600}
 
-/* GRAPH MINI PREVIEW */
-.mini-graph{background:rgba(10,22,40,.6);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-top:32px}
-.mg-row{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:11px}
-.mg-node{padding:4px 10px;border-radius:6px;border:1px solid;font-weight:600;white-space:nowrap}
-.mg-arrow{color:var(--text3);font-size:10px}
-.mg-risk{margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+/* Mini graph preview */
+.left-graph{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;margin-top:40px}
+.lg-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px}
+.lg-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.lg-row:last-child{border-bottom:none}
+.lg-node{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+.lg-node.id{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.lg-node.asset{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.lg-node.group{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+.lg-arrow{font-size:10px;color:rgba(255,255,255,.2);flex-shrink:0}
+.lg-risk{margin-left:auto;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(239,68,68,.15);color:#f87171}
+.lg-risk.h{background:rgba(249,115,22,.15);color:#fb923c}
 
-/* FORM PANEL */
-.auth-card{width:100%}
-.auth-header{margin-bottom:32px}
-.auth-header h1{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px}
-.auth-header p{font-size:13px;color:var(--text2)}
+/* ── RIGHT PANEL ──────────────────────────────────────── */
+.fb-status{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:32px;border:1px solid}
+.fb-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.auth-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);text-decoration:none;margin-bottom:24px;transition:.2s}
+.auth-back:hover{color:var(--blue)}
+.auth-heading{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.5px;margin-bottom:6px}
+.auth-subtext{font-size:14px;color:var(--text3);margin-bottom:28px}
 
-/* TABS */
-.auth-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px;margin-bottom:28px}
-.auth-tab{flex:1;text-align:center;padding:8px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .2s;border:none;background:transparent}
-.auth-tab.active{background:var(--surface2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+/* Tabs */
+.auth-tabs{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:28px}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;color:var(--text3);border-radius:6px;cursor:pointer;transition:.2s;border:none;background:none;font-family:inherit}
+.auth-tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
 
-/* FORM */
+/* Form */
 .form-group{margin-bottom:18px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-label{display:block;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
-.form-input{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
-.form-input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--blue-glow)}
-.form-input::placeholder{color:var(--text3)}
-.form-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.15)}
-.form-select{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;transition:border-color .2s}
-.form-select:focus{border-color:var(--border-focus)}
-.form-select option{background:var(--surface2)}
-
-/* PASSWORD TOGGLE */
+label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+input,select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);transition:.2s;outline:none}
+input:focus,select:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+input::placeholder{color:var(--text4)}
 .input-wrap{position:relative}
-.input-wrap .form-input{padding-right:40px}
-.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);background:none;border:none;font-size:14px;padding:2px}
-.pw-toggle:hover{color:var(--text2)}
+.input-wrap input{padding-right:44px}
+.input-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;line-height:1;background:none;border:none;color:var(--text4);transition:.2s}
+.input-eye:hover{color:var(--text2)}
+.form-check{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text3);cursor:pointer}
+.form-check input[type="checkbox"]{width:16px;height:16px;border-radius:4px;margin-top:1px;flex-shrink:0;accent-color:var(--blue)}
+.form-forgot{font-size:12px;color:var(--blue);text-decoration:none;font-weight:500;float:right;margin-top:-6px;transition:.2s}
+.form-forgot:hover{color:var(--blue2)}
+.pw-strength{margin-top:8px}
+.pw-bar-bg{height:4px;border-radius:2px;background:var(--bg);overflow:hidden}
+.pw-bar{height:100%;border-radius:2px;width:0;transition:width .3s,background .3s}
+.pw-hint{font-size:11px;color:var(--text4);margin-top:4px}
+select{cursor:pointer}
 
-/* STRENGTH METER */
-.pw-strength{margin-top:6px;height:3px;border-radius:2px;background:var(--border);overflow:hidden}
-.pw-strength-bar{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%}
-.pw-strength-label{font-size:10px;color:var(--text3);margin-top:4px}
+/* Alerts */
+.auth-alert{display:none;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px;border:1px solid;line-height:1.5}
+.auth-alert.show{display:flex}
+.auth-alert.err{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.auth-alert.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
 
-/* CHECKBOX */
-.form-check{display:flex;align-items:flex-start;gap:8px;cursor:pointer}
-.form-check input[type=checkbox]{width:15px;height:15px;margin-top:1px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
-.form-check-label{font-size:12px;color:var(--text2);line-height:1.5}
-.form-check-label a{color:var(--blue);text-decoration:none}
-.form-check-label a:hover{text-decoration:underline}
-
-/* ERROR / SUCCESS */
-.form-error{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;margin-bottom:16px;align-items:center;gap:8px}
-.form-error.show{display:flex}
-.form-success{display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;margin-bottom:16px;align-items:center;gap:8px}
-.form-success.show{display:flex}
-
-/* BUTTON */
-.btn-submit{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:all .2s;position:relative;overflow:hidden}
-.btn-submit:hover{box-shadow:0 4px 16px var(--blue-glow);transform:translateY(-1px)}
-.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-submit .spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;position:absolute;right:16px;top:50%;margin-top:-8px}
-.btn-submit.loading .spinner{display:block}
-.btn-submit.loading .btn-text{opacity:.6}
+/* Buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid transparent;transition:all .2s;letter-spacing:.1px}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(59,130,246,.25)}
+.btn-primary:hover{background:var(--blue2);border-color:var(--blue2);box-shadow:0 6px 20px rgba(59,130,246,.35);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-google{background:var(--surface);color:var(--text2);border-color:var(--border);box-shadow:var(--shadow-sm)}
+.btn-google:hover{background:var(--bg);border-color:var(--border2);color:var(--text)}
+.btn-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text3);font-size:11px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Divider */
+.or-divider{display:flex;align-items:center;gap:12px;margin:18px 0}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.or-divider span{font-size:12px;color:var(--text4);font-weight:500}
 
-/* DEMO QUICK-LOGIN */
-.demo-accounts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.demo-btn{padding:9px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;text-align:left}
-.demo-btn:hover{background:var(--surface2);border-color:var(--blue)}
-.demo-btn-name{font-size:12px;font-weight:600;color:var(--text)}
-.demo-btn-role{font-size:10px;color:var(--text3);margin-top:1px}
+/* Demo accounts */
+.demo-section{margin-top:20px;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.demo-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.demo-btn{padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:.2s;text-align:left;font-family:inherit;display:flex;align-items:center;gap:8px}
+.demo-btn:hover{background:var(--blue-light);border-color:rgba(59,130,246,.2);color:var(--blue2)}
+.demo-avatar{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.demo-info{}
+.demo-name{font-size:11px;font-weight:700;color:var(--text)}
+.demo-role{font-size:10px;color:var(--text4)}
 
-.auth-footer{margin-top:24px;text-align:center;font-size:12px;color:var(--text3)}
-.auth-footer a{color:var(--blue);text-decoration:none}
-.auth-footer a:hover{text-decoration:underline}
-.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);text-decoration:none;margin-bottom:24px;transition:color .2s}
-.back-link:hover{color:var(--text2)}
+.auth-footer{margin-top:24px;font-size:13px;color:var(--text3);text-align:center}
+.auth-footer a{color:var(--blue);font-weight:600;text-decoration:none}
+.auth-footer a:hover{color:var(--blue2)}
+
+@media(max-width:900px){
+  .auth-left{display:none}
+  .auth-right{width:100%;border-left:none;padding:32px 24px;box-shadow:none}
+}
 </style>
 </head>
 <body>
+<div class="auth-wrap">
 
-<!-- ── LEFT BRAND PANEL ── -->
+<!-- ══════════════════ LEFT PANEL ══════════════════ -->
 <div class="auth-left">
-  <div class="auth-bg"></div><div class="auth-grid"></div>
-  <div class="brand-wrap">
-    <a href="home.html" class="brand-logo">
-      <div class="brand-icon">
-        <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-          <path d="M16 2L4 7v9c0 8.28 5.72 14.12 12 16 6.28-1.88 12-7.72 12-16V7L16 2z" fill="url(#pgLogoGradAuth)" stroke="#3b82f6" stroke-width="1.8" stroke-linejoin="round"/>
-          <circle cx="16" cy="10" r="2.8" fill="#ef4444"/>
-          <circle cx="10" cy="19" r="2.2" fill="#3b82f6"/>
-          <circle cx="22" cy="19" r="2.2" fill="#06b6d4"/>
-          <path d="M16 12.8L10 16.8M16 12.8L22 16.8" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="2 2"/>
-          <defs>
-            <linearGradient id="pgLogoGradAuth" x1="4" y1="2" x2="28" y2="32">
-              <stop stop-color="#1e3a5f"/>
-              <stop offset="1" stop-color="#071221"/>
-            </linearGradient>
-          </defs>
-        </svg>
+  <div class="auth-bg">
+    <div class="auth-orb1"></div>
+    <div class="auth-orb2"></div>
+    <div class="auth-grid"></div>
+  </div>
+  <div class="left-content">
+    <div class="left-logo">
+      <div class="left-logo-icon">PG</div>
+      <div>
+        <div class="left-logo-name">PathGuard</div>
+        <div class="left-logo-sub">Attack Path Intelligence</div>
       </div>
-      <div><div class="brand-name">PathGuard</div><div class="brand-sub">Attack Path Intel</div></div>
-    </a>
-    <h2 class="brand-tagline">See the attack path<br><span>before the attacker does.</span></h2>
-    <p class="brand-desc">PathGuard maps identities, permissions, group memberships, cloud roles, and critical assets into a single attack-path intelligence graph — backed by Firebase.</p>
-    <div class="brand-features">
-      <div class="bf-item"><div class="bf-icon" style="background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2)">🗺</div>Automatic attack path discovery across nested groups</div>
-      <div class="bf-item"><div class="bf-icon" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2)">⚡</div>Safe compromise simulation — no production access</div>
-      <div class="bf-item"><div class="bf-icon" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2)">🛡</div>Prioritized remediation with before/after risk comparison</div>
-      <div class="bf-item"><div class="bf-icon" style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2)">☁</div>AWS, Azure &amp; GCP cloud role analysis</div>
     </div>
-    <div style="background:rgba(10,22,40,.6);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-top:28px">
-      <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Live Attack Path Preview</div>
-      <div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px"><span style="padding:4px 10px;border-radius:6px;border:1px solid #3b82f6;background:#1e3a5f22;color:#93c5fd;font-weight:600">👤 John Doe</span><span style="color:var(--text3);font-size:10px">→</span><span style="padding:4px 10px;border-radius:6px;border:1px solid #22c55e;background:#0f2d1a22;color:#86efac;font-weight:600">👥 App Support</span></div>
-      <div style="padding:3px 0 3px 8px;font-size:9px;color:var(--text3)">↓ CAN_DELEGATE</div>
-      <div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px"><span style="padding:4px 10px;border-radius:6px;border:1px solid #06b6d4;background:#0c334422;color:#67e8f9;font-weight:600">☁ Cloud Role</span><span style="color:var(--text3);font-size:10px">→</span><span style="padding:4px 10px;border-radius:6px;border:1px solid #ef4444;background:#3d0f0f44;color:#fca5a5;font-weight:600">◈ Finance DB</span><span style="margin-left:auto;font-size:10px;font-weight:700;background:rgba(239,68,68,.12);color:#ef4444;padding:2px 6px;border-radius:4px">96</span></div>
+
+    <h1 class="left-tagline">
+      See the attack path<br>
+      <span>before the attacker does</span>
+    </h1>
+    <p class="left-desc">PathGuard maps identities, permissions, and assets into a unified attack-path intelligence graph — backed by Firebase.</p>
+
+    <div class="left-features">
+      <div class="left-feature">
+        <div class="left-feature-check">🗺️</div>
+        <div class="left-feature-text"><strong>Automatic attack path discovery</strong> across nested groups</div>
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-check">🧪</div>
+        <div class="left-feature-text"><strong>Safe compromise simulation</strong> — no production access</div>
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-check">🛡️</div>
+        <div class="left-feature-text"><strong>Prioritized remediation</strong> with before/after risk comparison</div>
+      </div>
+      <div class="left-feature">
+        <div class="left-feature-check">☁️</div>
+        <div class="left-feature-text"><strong>AWS, Azure & GCP</strong> cloud role analysis</div>
+      </div>
+    </div>
+
+    <div class="left-graph">
+      <div class="lg-title">Live Attack Path Preview</div>
+      <div class="lg-row">
+        <div class="lg-node id">John Doe</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node group">Admin Group</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node asset">Finance DB</div>
+        <div class="lg-risk">96</div>
+      </div>
+      <div class="lg-row">
+        <div class="lg-node id">svc-analytics</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node group">Cloud Role</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node asset">S3 Bucket</div>
+        <div class="lg-risk h">84</div>
+      </div>
+      <div class="lg-row">
+        <div class="lg-node id">Carlos R.</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node group">IAM Admins</div>
+        <span class="lg-arrow">→</span>
+        <div class="lg-node asset">Payroll</div>
+        <div class="lg-risk">91</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── RIGHT AUTH PANEL ── -->
+<!-- ══════════════════ RIGHT PANEL ══════════════════ -->
 <div class="auth-right">
-  <a href="home.html" class="back-link">← Back to home</a>
-
   <!-- Firebase status badge -->
-  <div id="fb-status" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:20px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.1)">
-    <div id="fb-dot" style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e"></div>
-    <span id="fb-status-text">Firebase Live Sync Connected</span>
+  <div class="fb-status" id="fb-status">
+    <div class="fb-status-dot" id="fb-dot"></div>
+    <span id="fb-status-text">Checking Firebase connection…</span>
   </div>
 
-  <div class="auth-header">
-    <h1 id="auth-title">Welcome back</h1>
-    <p id="auth-subtitle">Sign in to your PathGuard security console.</p>
-  </div>
+  <a href="index.html" class="auth-back">← Back to home</a>
 
+  <h2 class="auth-heading" id="auth-title">Welcome back</h2>
+  <p class="auth-subtext" id="auth-subtitle">Sign in to your PathGuard security console.</p>
+
+  <!-- Tabs -->
   <div class="auth-tabs">
-    <button class="auth-tab active" id="tab-login"    onclick="A.tab('login')">Sign In</button>
-    <button class="auth-tab"        id="tab-register" onclick="A.tab('register')">Create Account</button>
+    <button class="auth-tab active" id="tab-login" onclick="A.tab('login')">Sign In</button>
+    <button class="auth-tab" id="tab-register" onclick="A.tab('register')">Create Account</button>
   </div>
 
-  <div class="form-error" id="a-err"><span>⚠</span><span id="err-msg"></span></div>
-  <div class="form-success" id="a-ok"><span>✓</span><span id="ok-msg"></span></div>
+  <!-- Alerts -->
+  <div class="auth-alert err" id="a-err">
+    <span>⚠</span><span id="err-msg"></span>
+  </div>
+  <div class="auth-alert ok" id="a-ok">
+    <span>✓</span><span id="ok-msg"></span>
+  </div>
 
-  <!-- LOGIN -->
-  <form id="form-login" onsubmit="A.login(event)">
+  <!-- ── LOGIN FORM ── -->
+  <form id="form-login" onsubmit="A.login(event)" autocomplete="on">
     <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input class="form-input" type="email" id="li-email" placeholder="you@company.com" required autocomplete="email">
+      <label for="li-email">Email Address</label>
+      <input id="li-email" type="email" placeholder="you@company.com" required autocomplete="email">
     </div>
     <div class="form-group">
-      <label class="form-label">Password</label>
+      <label for="li-pass">
+        Password
+        <a href="#" class="form-forgot" onclick="A.forgotPw();return false">Forgot password?</a>
+      </label>
       <div class="input-wrap">
-        <input class="form-input" type="password" id="li-pass" placeholder="Your password" required autocomplete="current-password">
-        <button type="button" class="pw-toggle" onclick="A.togglePw('li-pass',this)">👁</button>
+        <input id="li-pass" type="password" placeholder="••••••••••••" required autocomplete="current-password">
+        <button type="button" class="input-eye" onclick="A.togglePw('li-pass',this)">👁</button>
       </div>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <label class="form-check"><input type="checkbox" id="remember"><span class="form-check-label">Remember me</span></label>
-      <a href="#" style="font-size:12px;color:var(--blue);text-decoration:none" onclick="A.forgotPw();return false">Forgot password?</a>
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" id="li-remember"> Remember me for 30 days
+      </label>
     </div>
-    <button type="submit" class="btn-submit" id="btn-login"><span class="btn-text">Sign In to Dashboard</span><span class="spinner"></span></button>
+    <button type="submit" class="btn btn-primary" id="btn-login">
+      Sign In to Dashboard
+    </button>
   </form>
 
-  <!-- REGISTER -->
-  <form id="form-register" style="display:none" onsubmit="A.register(event)">
+  <!-- ── REGISTER FORM ── -->
+  <form id="form-register" onsubmit="A.register(event)" autocomplete="off" style="display:none">
     <div class="form-row">
-      <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" id="rg-first" placeholder="John" required autocomplete="given-name"></div>
-      <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" id="rg-last" placeholder="Smith" required autocomplete="family-name"></div>
+      <div class="form-group">
+        <label for="rg-first">First Name</label>
+        <input id="rg-first" type="text" placeholder="Alex" required>
+      </div>
+      <div class="form-group">
+        <label for="rg-last">Last Name</label>
+        <input id="rg-last" type="text" placeholder="Morgan" required>
+      </div>
     </div>
-    <div class="form-group"><label class="form-label">Work Email</label><input class="form-input" type="email" id="rg-email" placeholder="you@company.com" required autocomplete="email"></div>
     <div class="form-group">
-      <label class="form-label">Role</label>
-      <select class="form-select" id="rg-role">
-        <option>Security Analyst</option><option>Identity Security Engineer</option>
-        <option>SOC Analyst</option><option>Cloud Security Engineer</option>
-        <option>IAM Administrator</option><option>Security Administrator</option><option>CISO / Security Leader</option>
+      <label for="rg-email">Work Email</label>
+      <input id="rg-email" type="email" placeholder="you@company.com" required>
+    </div>
+    <div class="form-group">
+      <label for="rg-pass">Password</label>
+      <div class="input-wrap">
+        <input id="rg-pass" type="password" placeholder="Min. 8 characters" required minlength="8"
+          oninput="A.strength(this.value)">
+        <button type="button" class="input-eye" onclick="A.togglePw('rg-pass',this)">👁</button>
+      </div>
+      <div class="pw-strength">
+        <div class="pw-bar-bg"><div class="pw-bar" id="pw-bar"></div></div>
+        <div class="pw-hint" id="pw-hint">Enter a strong password</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="rg-role">Your Role</label>
+      <select id="rg-role">
+        <option value="Security Analyst">Security Analyst</option>
+        <option value="IAM Engineer">IAM Engineer</option>
+        <option value="SOC Analyst">SOC Analyst</option>
+        <option value="Security Administrator">Security Administrator</option>
+        <option value="CISO">CISO</option>
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">Password</label>
-      <div class="input-wrap">
-        <input class="form-input" type="password" id="rg-pass" placeholder="Min 8 characters" required autocomplete="new-password" oninput="A.strength(this.value)">
-        <button type="button" class="pw-toggle" onclick="A.togglePw('rg-pass',this)">👁</button>
-      </div>
-      <div class="pw-strength"><div class="pw-strength-bar" id="pw-bar"></div></div>
-      <div class="pw-strength-label" id="pw-hint"></div>
+      <label class="form-check">
+        <input type="checkbox" id="rg-terms" required>
+        I agree to the <a href="#" style="color:var(--blue)">Terms of Service</a> and <a href="#" style="color:var(--blue)">Privacy Policy</a>
+      </label>
     </div>
-    <div class="form-group"><label class="form-check"><input type="checkbox" id="rg-terms" required><span class="form-check-label">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span></label></div>
-    <button type="submit" class="btn-submit" id="btn-reg"><span class="btn-text">Create Account</span><span class="spinner"></span></button>
+    <button type="submit" class="btn btn-primary" id="btn-reg">Create Account</button>
   </form>
 
-  <!-- Google -->
-  <div class="divider">or continue with</div>
-  <button onclick="A.google()" style="width:100%;padding:11px;background:var(--surface);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;transition:all .2s;margin-bottom:4px" onmouseover="this.style.background='var(--surface2)';this.style.borderColor='var(--blue)'" onmouseout="this.style.background='var(--surface)';this.style.borderColor='var(--border2)'">
-    <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+  <!-- OR Divider -->
+  <div class="or-divider"><span>or continue with</span></div>
+
+  <!-- Google Sign-in -->
+  <button class="btn btn-google" onclick="A.google()" type="button">
+    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
     Continue with Google
   </button>
 
   <!-- Demo accounts -->
-  <div class="divider">or use a demo account</div>
-  <div class="demo-accounts">
-    <button class="demo-btn" onclick="A.demo('analyst@pathguard.io','Demo@1234')"><div class="demo-btn-name">Security Analyst</div><div class="demo-btn-role">analyst@pathguard.io</div></button>
-    <button class="demo-btn" onclick="A.demo('engineer@pathguard.io','Demo@1234')"><div class="demo-btn-name">IAM Engineer</div><div class="demo-btn-role">engineer@pathguard.io</div></button>
-    <button class="demo-btn" onclick="A.demo('soc@pathguard.io','Demo@1234')"><div class="demo-btn-name">SOC Analyst</div><div class="demo-btn-role">soc@pathguard.io</div></button>
-    <button class="demo-btn" onclick="A.demo('admin@pathguard.io','Demo@1234')"><div class="demo-btn-name">Security Admin</div><div class="demo-btn-role">admin@pathguard.io</div></button>
+  <div class="demo-section">
+    <div class="demo-title">⚡ Try with a demo account</div>
+    <div class="demo-grid">
+      <button class="demo-btn" onclick="A.demo('analyst@pathguard.io','Demo@1234')">
+        <div class="demo-avatar">AM</div>
+        <div class="demo-info">
+          <div class="demo-name">Alex Morgan</div>
+          <div class="demo-role">Security Analyst</div>
+        </div>
+      </button>
+      <button class="demo-btn" onclick="A.demo('engineer@pathguard.io','Demo@1234')">
+        <div class="demo-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">JK</div>
+        <div class="demo-info">
+          <div class="demo-name">Jordan Kim</div>
+          <div class="demo-role">IAM Engineer</div>
+        </div>
+      </button>
+      <button class="demo-btn" onclick="A.demo('soc@pathguard.io','Demo@1234')">
+        <div class="demo-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a)">SR</div>
+        <div class="demo-info">
+          <div class="demo-name">Sam Rivera</div>
+          <div class="demo-role">SOC Analyst</div>
+        </div>
+      </button>
+      <button class="demo-btn" onclick="A.demo('admin@pathguard.io','Demo@1234')">
+        <div class="demo-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">CW</div>
+        <div class="demo-info">
+          <div class="demo-name">Chris Wallace</div>
+          <div class="demo-role">Admin</div>
+        </div>
+      </button>
+    </div>
   </div>
 
-  <div class="auth-footer" id="auth-footer">Don't have an account? <a href="#" onclick="A.tab('register');return false">Create one free →</a></div>
+  <div class="auth-footer" id="auth-footer">
+    Don't have an account? <a href="#" onclick="A.tab('register');return false">Create one free →</a>
+  </div>
+</div>
 </div>
 
-<!-- ── FIREBASE (ES Module) ── -->
+<!-- ══════════════════ FIREBASE + AUTH LOGIC ══════════════════ -->
 <script type="module">
-import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged,
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider,
          updateProfile, sendPasswordResetEmail }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ── Firebase Config for project: identity-security-58adc ─────
-// projectId / authDomain / storageBucket are known from service account.
-// apiKey, messagingSenderId, appId are loaded from .env via serve.ps1.
-// If running without serve.ps1, paste your web app values here directly.
+// ── Firebase Config ──────────────────────────────────────────
 const injected = window.__PATHGUARD_CONFIG__ || {};
 const FB = {
   projectId:         injected.projectId         || "identity-security-58adc",
@@ -278,19 +399,21 @@ const FB = {
   measurementId:     injected.measurementId     || "G-77S2KQK0L0"
 };
 
-const PLACEHOLDER = ["PASTE_YOUR_WEB_API_KEY_HERE","PASTE_YOUR_SENDER_ID_HERE","PASTE_YOUR_APP_ID_HERE","PASTE_API_KEY_HERE","PASTE_SENDER_ID_HERE","PASTE_APP_ID_HERE","YOUR_API_KEY","GET_FROM_CONSOLE",""];
+const PLACEHOLDER = ["","PASTE_YOUR_WEB_API_KEY_HERE","YOUR_API_KEY","GET_FROM_CONSOLE"];
 const FB_READY = !!FB.apiKey && !PLACEHOLDER.includes(FB.apiKey) && !!FB.appId && !PLACEHOLDER.includes(FB.appId);
 
-// ── Update status badge ───────────────────────────────────────
+// ── Status badge ─────────────────────────────────────────────
 const statusEl  = document.getElementById("fb-status");
 const statusTxt = document.getElementById("fb-status-text");
 const statusDot = document.getElementById("fb-dot");
 if (FB_READY) {
-  Object.assign(statusEl.style, {background:"rgba(34,197,94,.08)",borderColor:"rgba(34,197,94,.25)",color:"#22c55e"});
-  statusTxt.textContent = "Firebase Live Sync Connected (" + FB.projectId + ")";
+  Object.assign(statusEl.style,{background:"rgba(34,197,94,.08)",borderColor:"rgba(34,197,94,.3)",color:"#166534"});
+  statusDot.style.background = "#22c55e";
+  statusTxt.textContent = "🟢 Firebase Connected — " + FB.projectId;
 } else {
-  Object.assign(statusEl.style, {background:"rgba(234,179,8,.08)",borderColor:"rgba(234,179,8,.25)",color:"#eab308"});
-  statusTxt.textContent = "Demo Session Active (Offline Mode)";
+  Object.assign(statusEl.style,{background:"rgba(234,179,8,.08)",borderColor:"rgba(234,179,8,.3)",color:"#92400e"});
+  statusDot.style.background = "#eab308";
+  statusTxt.textContent = "⚠ Demo Mode (Firebase not configured)";
 }
 
 // ── Init Firebase ─────────────────────────────────────────────
@@ -300,20 +423,25 @@ if (FB_READY) {
   auth      = getAuth(app);
   db        = getFirestore(app, injected.databaseId || "indentity");
   gProvider = new GoogleAuthProvider();
+
+  // Handle Google redirect result
   getRedirectResult(auth).then(async (cred) => {
     if (cred && cred.user) {
       const ref = doc(db, "users", cred.user.uid);
       const snap = await getDoc(ref);
       if (!snap.exists()) {
         const n = cred.user.displayName || "Google User";
-        await setDoc(ref, { uid: cred.user.uid, name: n, email: cred.user.email, role: "Security Analyst", avatar: n.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(), createdAt: serverTimestamp() });
+        await setDoc(ref, { uid: cred.user.uid, name: n, email: cred.user.email,
+          role: "Security Analyst",
+          avatar: n.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase(),
+          createdAt: serverTimestamp() });
       }
       window.location.href = "dashboard.html";
     }
   }).catch(() => {});
 }
 
-// ── Demo users (works without Firebase) ──────────────────────
+// ── Demo Users ───────────────────────────────────────────────
 const DEMOS = [
   {email:"analyst@pathguard.io",  password:"Demo@1234", name:"Alex Morgan",   role:"Security Analyst",      avatar:"AM"},
   {email:"engineer@pathguard.io", password:"Demo@1234", name:"Jordan Kim",    role:"IAM Engineer",           avatar:"JK"},
@@ -321,156 +449,187 @@ const DEMOS = [
   {email:"admin@pathguard.io",    password:"Demo@1234", name:"Chris Wallace", role:"Security Administrator", avatar:"CW"},
 ];
 
-// ── Auth controller (global for inline handlers) ──────────────
+// ── Auth Controller ───────────────────────────────────────────
 window.A = {
   tab(name) {
-    const lg = name==="login";
+    const lg = name === "login";
     document.getElementById("tab-login").classList.toggle("active", lg);
     document.getElementById("tab-register").classList.toggle("active", !lg);
     document.getElementById("form-login").style.display    = lg ? "" : "none";
     document.getElementById("form-register").style.display = lg ? "none" : "";
     document.getElementById("auth-title").textContent    = lg ? "Welcome back" : "Create your account";
-    document.getElementById("auth-subtitle").textContent = lg ? "Sign in to your security console." : "Start analyzing attack paths in minutes.";
+    document.getElementById("auth-subtitle").textContent = lg ? "Sign in to your PathGuard security console." : "Start analyzing attack paths in minutes.";
     document.getElementById("auth-footer").innerHTML = lg
       ? `Don't have an account? <a href="#" onclick="A.tab('register');return false">Create one free →</a>`
       : `Already have an account? <a href="#" onclick="A.tab('login');return false">Sign in →</a>`;
     this.clear();
   },
-  err(msg){const e=document.getElementById("a-err");document.getElementById("err-msg").textContent=msg;e.classList.add("show");document.getElementById("a-ok").classList.remove("show");},
-  ok(msg) {const e=document.getElementById("a-ok"); document.getElementById("ok-msg").textContent=msg; e.classList.add("show");document.getElementById("a-err").classList.remove("show");},
-  clear() {document.getElementById("a-err").classList.remove("show");document.getElementById("a-ok").classList.remove("show");},
-  busy(id,on){const b=document.getElementById(id);if(!b)return;b.disabled=on;b.classList.toggle("loading",on);},
-  togglePw(id,btn){const i=document.getElementById(id);if(!i)return;i.type=i.type==="password"?"text":"password";btn.textContent=i.type==="password"?"👁":"🙈";},
-  strength(pw){
-    let s=0;if(pw.length>=8)s++;if(pw.length>=12)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;
-    const c=[{p:"20%",col:"#ef4444",t:"Very weak"},{p:"40%",col:"#f97316",t:"Weak"},{p:"60%",col:"#eab308",t:"Fair"},{p:"80%",col:"#3b82f6",t:"Strong"},{p:"100%",col:"#22c55e",t:"Very strong"}][Math.max(0,s-1)]||{p:"20%",col:"#ef4444",t:"Very weak"};
-    const bar=document.getElementById("pw-bar");if(bar){bar.style.width=c.p;bar.style.background=c.col;}
-    const hint=document.getElementById("pw-hint");if(hint){hint.textContent=c.t;hint.style.color=c.col;}
-  },
-  setSess(u){sessionStorage.setItem("pg_session",JSON.stringify(u));},
 
-  async login(e){
-    e.preventDefault();this.clear();
-    const email=document.getElementById("li-email").value.trim(),pass=document.getElementById("li-pass").value;
-    this.busy("btn-login",true);
+  err(msg)  { const e=document.getElementById("a-err"); document.getElementById("err-msg").textContent=msg; e.classList.add("show"); document.getElementById("a-ok").classList.remove("show"); },
+  ok(msg)   { const e=document.getElementById("a-ok");  document.getElementById("ok-msg").textContent=msg;  e.classList.add("show"); document.getElementById("a-err").classList.remove("show"); },
+  clear()   { document.getElementById("a-err").classList.remove("show"); document.getElementById("a-ok").classList.remove("show"); },
+
+  busy(id, on) {
+    const b = document.getElementById(id);
+    if (!b) return;
+    b.disabled = on;
+    b.innerHTML = on
+      ? `<span class="btn-spin"></span> Please wait…`
+      : (id === "btn-login" ? "Sign In to Dashboard" : "Create Account");
+  },
+
+  togglePw(id, btn) {
+    const i = document.getElementById(id);
+    if (!i) return;
+    i.type = i.type === "password" ? "text" : "password";
+    btn.textContent = i.type === "password" ? "👁" : "🙈";
+  },
+
+  strength(pw) {
+    let s = 0;
+    if (pw.length >= 8)  s++;
+    if (pw.length >= 12) s++;
+    if (/[A-Z]/.test(pw)) s++;
+    if (/[0-9]/.test(pw)) s++;
+    if (/[^A-Za-z0-9]/.test(pw)) s++;
+    const c = [{p:"20%",col:"#ef4444",t:"Very weak"},{p:"40%",col:"#f97316",t:"Weak"},{p:"60%",col:"#eab308",t:"Fair"},{p:"80%",col:"#3b82f6",t:"Strong"},{p:"100%",col:"#22c55e",t:"Very strong"}][Math.max(0,s-1)] || {p:"20%",col:"#ef4444",t:"Very weak"};
+    const bar = document.getElementById("pw-bar"); if (bar) { bar.style.width=c.p; bar.style.background=c.col; }
+    const hint = document.getElementById("pw-hint"); if (hint) { hint.textContent=c.t; hint.style.color=c.col; }
+  },
+
+  setSess(u) { sessionStorage.setItem("pg_session", JSON.stringify(u)); },
+
+  async login(e) {
+    e.preventDefault(); this.clear();
+    const email = document.getElementById("li-email").value.trim();
+    const pass  = document.getElementById("li-pass").value;
+    this.busy("btn-login", true);
     try {
-      if(FB_READY){
-        await signInWithEmailAndPassword(auth,email,pass);
+      if (FB_READY) {
+        await signInWithEmailAndPassword(auth, email, pass);
+        // onAuthStateChanged in dashboard.html handles the rest
+        window.location.href = "dashboard.html";
       } else {
-        await new Promise(r=>setTimeout(r,600));
-        const d=DEMOS.find(u=>u.email.toLowerCase()===email.toLowerCase()&&u.password===pass);
-        if(!d) throw new Error("Invalid email or password. Use a demo account below.");
-        this.setSess(d); this.ok("Signed in! Redirecting…");
-        setTimeout(()=>window.location.href="dashboard.html",700);
+        await new Promise(r => setTimeout(r, 600));
+        const d = DEMOS.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === pass);
+        if (!d) throw new Error("Invalid email or password. Try a demo account below.");
+        this.setSess(d);
+        this.ok("Signed in! Redirecting to dashboard…");
+        setTimeout(() => window.location.href = "dashboard.html", 700);
       }
-    } catch(err){
+    } catch(err) {
       if (err.code === "auth/operation-not-allowed" || err.code === "auth/unauthorized-domain") {
-        // Domain not whitelisted in Firebase Console → fallback to demo session
         const d = DEMOS.find(u => u.email.toLowerCase() === email.toLowerCase()) || DEMOS[0];
         this.setSess({ name: d.name, email: d.email, role: d.role, avatar: d.avatar });
-        this.ok("Signing in via secure demo session… Redirecting to dashboard.");
+        this.ok("Signing in via secure demo session… Redirecting.");
         setTimeout(() => window.location.href = "dashboard.html", 800);
       } else {
         this.err(this._fmt(err));
       }
-    }
-    finally{this.busy("btn-login",false);}
+    } finally { this.busy("btn-login", false); }
   },
 
-  async register(e){
-    e.preventDefault();this.clear();
-    const first=document.getElementById("rg-first").value.trim(),last=document.getElementById("rg-last").value.trim();
-    const email=document.getElementById("rg-email").value.trim(),pass=document.getElementById("rg-pass").value;
-    const role=document.getElementById("rg-role").value;
-    if(pass.length<8){this.err("Password must be at least 8 characters.");return;}
-    this.busy("btn-reg",true);
-    const name=first+" "+last,avatar=(first[0]+(last[0]||"")).toUpperCase();
+  async register(e) {
+    e.preventDefault(); this.clear();
+    const first = document.getElementById("rg-first").value.trim();
+    const last  = document.getElementById("rg-last").value.trim();
+    const email = document.getElementById("rg-email").value.trim();
+    const pass  = document.getElementById("rg-pass").value;
+    const role  = document.getElementById("rg-role").value;
+    if (pass.length < 8) { this.err("Password must be at least 8 characters."); return; }
+    this.busy("btn-reg", true);
+    const name = first + " " + last;
+    const avatar = (first[0] + (last[0] || "")).toUpperCase();
     try {
-      if(FB_READY){
-        const cred=await createUserWithEmailAndPassword(auth,email,pass);
-        await updateProfile(cred.user,{displayName:name});
-        await setDoc(doc(db,"users",cred.user.uid),{uid:cred.user.uid,name,email,role,avatar,createdAt:serverTimestamp()});
-      } else {
-        await new Promise(r=>setTimeout(r,700));
-        this.setSess({name,email,role,avatar});
+      if (FB_READY) {
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await updateProfile(cred.user, { displayName: name });
+        await setDoc(doc(db, "users", cred.user.uid), { uid: cred.user.uid, name, email, role, avatar, createdAt: serverTimestamp() });
         this.ok("Account created! Redirecting…");
-        setTimeout(()=>window.location.href="dashboard.html",800);
+        setTimeout(() => window.location.href = "dashboard.html", 800);
+      } else {
+        await new Promise(r => setTimeout(r, 700));
+        this.setSess({ name, email, role, avatar });
+        this.ok("Account created! Redirecting to dashboard…");
+        setTimeout(() => window.location.href = "dashboard.html", 800);
       }
-    } catch(err){
+    } catch(err) {
       if (err.code === "auth/operation-not-allowed" || err.code === "auth/unauthorized-domain") {
-        // Domain not whitelisted in Firebase Console → fallback to demo session
         this.setSess({ name: name || "Security User", email, role, avatar: avatar || "SU" });
-        this.ok("Account created! Signing in via secure demo session… Redirecting.");
+        this.ok("Registered! Signing in via demo session… Redirecting.");
         setTimeout(() => window.location.href = "dashboard.html", 800);
       } else {
         this.err(this._fmt(err));
       }
-    }
-    finally{this.busy("btn-reg",false);}
+    } finally { this.busy("btn-reg", false); }
   },
 
-  async google(){
+  async google() {
     this.clear();
-    if(!FB_READY){this.err("Google sign-in requires Firebase. Add your API key to .env and restart the server.");return;}
-    try{
-      const cred=await signInWithPopup(auth,gProvider);
-      const ref=doc(db,"users",cred.user.uid),snap=await getDoc(ref);
-      if(!snap.exists()){const n=cred.user.displayName||"Google User";await setDoc(ref,{uid:cred.user.uid,name:n,email:cred.user.email,role:"Security Analyst",avatar:n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),createdAt:serverTimestamp()});}
+    if (!FB_READY) { this.err("Google sign-in requires Firebase. Try a demo account below."); return; }
+    try {
+      const cred = await signInWithPopup(auth, gProvider);
+      const ref  = doc(db, "users", cred.user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        const n = cred.user.displayName || "Google User";
+        await setDoc(ref, { uid: cred.user.uid, name: n, email: cred.user.email,
+          role: "Security Analyst",
+          avatar: n.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase(),
+          createdAt: serverTimestamp() });
+      }
       this.ok("Signed in with Google! Redirecting…");
-      setTimeout(()=>window.location.href="dashboard.html",600);
-    }catch(err){
+      setTimeout(() => window.location.href = "dashboard.html", 600);
+    } catch(err) {
       if (err.code === "auth/operation-not-allowed" || err.code === "auth/configuration-not-found" || err.code === "auth/unauthorized-domain") {
-        // Domain not whitelisted OR provider disabled → fallback to demo session
         this.setSess(DEMOS[0]);
-        this.ok("Signing in via secure demo session… Redirecting to dashboard.");
+        this.ok("Signing in via demo session… Redirecting.");
         setTimeout(() => window.location.href = "dashboard.html", 1000);
-      } else if(err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
-        try {
-          this.ok("Browser blocked popup window. Redirecting to Google Sign-In…");
-          await signInWithRedirect(auth, gProvider);
-        } catch(reErr) { this.err(this._fmt(reErr)); }
+      } else if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || (err.message && err.message.toLowerCase().includes("popup"))) {
+        try { this.ok("Popup blocked. Redirecting…"); await signInWithRedirect(auth, gProvider); }
+        catch(reErr) { this.err(this._fmt(reErr)); }
       } else {
         this.err(this._fmt(err));
       }
     }
   },
 
-  async forgotPw(){
-    const email=document.getElementById("li-email").value.trim();
-    if(!email){this.err("Enter your email address first.");return;}
-    if(!FB_READY){this.ok("Demo mode: password reset not available.");return;}
-    try{await sendPasswordResetEmail(auth,email);this.ok("Password reset email sent. Check your inbox.");}
-    catch(err){this.err(this._fmt(err));}
+  async forgotPw() {
+    const email = document.getElementById("li-email").value.trim();
+    if (!email) { this.err("Enter your email address first."); return; }
+    if (!FB_READY) { this.ok("Demo mode — password reset not available."); return; }
+    try { await sendPasswordResetEmail(auth, email); this.ok("Password reset email sent. Check your inbox."); }
+    catch(err) { this.err(this._fmt(err)); }
   },
 
-  demo(email,pass){
-    document.getElementById("li-email").value=email;
-    document.getElementById("li-pass").value=pass;
+  demo(email, pass) {
+    document.getElementById("li-email").value = email;
+    document.getElementById("li-pass").value  = pass;
     this.tab("login");
-    setTimeout(()=>this.login({preventDefault:()=>{}}),100);
+    setTimeout(() => this.login({ preventDefault: () => {} }), 100);
   },
 
-  _fmt(err){
-    const map={
-      "auth/operation-not-allowed":"Sign-in provider disabled in Firebase Console (Enable Email/Password under Authentication → Sign-in method).",
-      "auth/unauthorized-domain":"This domain is not authorized in Firebase Console. Go to Authentication → Settings → Authorized Domains and add this domain.",
-      "auth/configuration-not-found":"Google Sign-In is not enabled in Firebase Console.",
-      "auth/user-not-found":"No account found with this email.",
-      "auth/wrong-password":"Incorrect password.",
-      "auth/email-already-in-use":"An account with this email already exists.",
-      "auth/invalid-email":"Please enter a valid email address.",
-      "auth/weak-password":"Password must be at least 6 characters.",
-      "auth/too-many-requests":"Too many attempts. Please wait and try again.",
-      "auth/popup-closed-by-user":"Google sign-in was cancelled.",
+  _fmt(err) {
+    const map = {
+      "auth/operation-not-allowed": "Sign-in provider disabled in Firebase Console.",
+      "auth/unauthorized-domain":   "This domain is not authorized in Firebase Console. Add it under Authentication → Settings → Authorized Domains.",
+      "auth/user-not-found":        "No account found with this email.",
+      "auth/wrong-password":        "Incorrect password.",
+      "auth/email-already-in-use":  "An account with this email already exists.",
+      "auth/invalid-email":         "Please enter a valid email address.",
+      "auth/weak-password":         "Password must be at least 6 characters.",
+      "auth/too-many-requests":     "Too many attempts. Please wait a moment.",
+      "auth/popup-closed-by-user":  "Google sign-in was cancelled.",
       "auth/network-request-failed":"Network error. Check your connection.",
-      "auth/invalid-credential":"Invalid email or password."
+      "auth/invalid-credential":    "Invalid email or password.",
+      "auth/configuration-not-found":"Google Sign-In not enabled in Firebase Console.",
     };
-    return map[err.code]||err.message||"An unexpected error occurred.";
+    return map[err.code] || err.message || "An unexpected error occurred.";
   },
 };
 
 // Switch to register tab if URL has ?mode=register
-if(new URLSearchParams(window.location.search).get("mode")==="register") A.tab("register");
+if (new URLSearchParams(window.location.search).get("mode") === "register") A.tab("register");
 </script>
 </body>
 </html>
