@@ -399,3 +399,152 @@ PG.Pages._simPaths=function(critOnly){
   if(!paths.length){el.innerHTML=`<div class="empty-state mt-16"><h3>No${critOnly?" Critical":""} Paths Found</h3></div>`;return;}
   el.innerHTML=`<div class="card mt-16"><div class="card-header"><h2>${critOnly?"Critical":"Discovered"} Attack Paths</h2><span>${paths.length} paths</span></div><div class="card-body">${paths.map(p=>`<div class="attack-path-card ${p.severity} mt-8" onclick="PG.Pages.openPathDetail('${p.id}')">${bdg(p.severity)}<div class="path-chain mt-8">${pChain(p.steps)}</div><p class="text-xs text-secondary mt-8">${p.description}</p></div>`).join("")}</div></div>`;
 };
+
+/* ══════════════════════════════════════════════════════════
+   EMPLOYEE MANAGER PAGE
+══════════════════════════════════════════════════════════ */
+PG.Pages.renderEmployees=function(){
+  if(typeof PG.EmployeeManager==="undefined"){
+    document.getElementById("page-employees").innerHTML=`<div class="empty-state"><h3>Employee Manager not loaded.</h3></div>`;
+    return;
+  }
+  PG.EmployeeManager.render("page-employees");
+};
+
+/* ══════════════════════════════════════════════════════════
+   REAL-TIME SIMULATION — enhanced step-by-step with animated nodes
+══════════════════════════════════════════════════════════ */
+PG.Pages._runSimRealtime=function(){
+  const identityId=document.getElementById("sim-id").value;
+  const scope=document.getElementById("sim-scope").value||"all";
+  const access=(document.querySelector("#sim-access input:checked")||{value:"phishing"}).value;
+  const identity=PG.identities.find(i=>i.id===identityId); if(!identity) return;
+
+  // Get attack paths for this identity
+  const myPaths=PG.attackPaths.filter(p=>p.sourceId===identityId);
+  const allSteps=myPaths.flatMap(p=>p.steps);
+
+  // Build realtime animated steps for display
+  const realtimeSteps=[
+    {msg:`🔍 Scanning identity: ${identity.name}`, delay:0},
+    {msg:`📋 Analyzing ${identity.groups} group memberships…`, delay:400},
+    {msg:`🔑 Checking ${identity.directPerms} direct permissions…`, delay:800},
+    {msg:`⚙ Scanning ${identity.cloudRoles} cloud role assignments…`, delay:1200},
+    {msg:`🌐 Tracing inherited permission chains…`, delay:1600},
+    {msg:`🎯 Computing reachable critical assets…`, delay:2000},
+    {msg:`⚡ Calculating attack paths (${myPaths.length} found)…`, delay:2400},
+    {msg:`🔴 Evaluating blast radius…`, delay:2800},
+    {msg:`✅ Simulation complete — generating report…`, delay:3200},
+  ];
+
+  const re=document.getElementById("sim-results"); re.style.display="block";
+
+  // Build the animated timeline UI
+  re.innerHTML=`
+  <div class="card mt-16">
+    <div class="card-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="sim-rt-dot" style="width:12px;height:12px;border-radius:50%;background:#f97316;animation:pulseDot 0.8s infinite"></div>
+        <h2 id="sim-rt-title">⚡ Real-Time Attack Simulation Running…</h2>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Identity card -->
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(239,68,68,.15);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">
+          ${identity.type==="employee"?"👤":identity.type==="contractor"?"🔗":"⚙"}
+        </div>
+        <div>
+          <div style="font-size:15px;font-weight:800;color:var(--text-primary)">${identity.name}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${identity.email}</div>
+        </div>
+        <div style="margin-left:auto;text-align:center">
+          <div style="font-size:26px;font-weight:900;color:${PG.RiskEngine.getRiskColor(identity.risk)}">${identity.risk}</div>
+          <div style="font-size:9px;color:var(--text-muted)">/100 RISK</div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div id="sim-rt-timeline" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+        ${realtimeSteps.map((_,i)=>`
+          <div id="rt-step-${i}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--bg-elevated);border:1px solid var(--border);opacity:.3;transition:all .4s ease">
+            <div id="rt-icon-${i}" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px"></div>
+            <span id="rt-msg-${i}" style="font-size:12px;color:var(--text-secondary)">—</span>
+            <div id="rt-bar-${i}" style="margin-left:auto;width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:0;background:#3b82f6;border-radius:2px;transition:width .8s ease"></div>
+            </div>
+          </div>`).join("")}
+      </div>
+
+      <!-- Live path nodes appearing one by one -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:10px" id="rt-paths-label" style="display:none">
+        🔴 Attack Paths Detected
+      </div>
+      <div id="rt-live-paths" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>`;
+
+  // Animate each step
+  realtimeSteps.forEach((step,i)=>{
+    setTimeout(()=>{
+      const stepEl=document.getElementById(`rt-step-${i}`);
+      const iconEl=document.getElementById(`rt-icon-${i}`);
+      const msgEl =document.getElementById(`rt-msg-${i}`);
+      const barEl =document.getElementById(`rt-bar-${i}`);
+      if(!stepEl) return;
+      // Activate
+      stepEl.style.opacity="1";
+      stepEl.style.borderColor="#3b82f6";
+      stepEl.style.background="rgba(59,130,246,.06)";
+      if(iconEl){ iconEl.style.borderColor="#3b82f6"; iconEl.innerHTML="<div style='width:8px;height:8px;border-radius:50%;background:#3b82f6;animation:pulseDot .6s infinite'></div>"; }
+      if(msgEl) { msgEl.textContent=step.msg; msgEl.style.color="var(--text-primary)"; }
+      if(barEl) { const fill=barEl.querySelector("div"); if(fill){ setTimeout(()=>fill.style.width="100%",50);} }
+
+      // Complete after a moment
+      setTimeout(()=>{
+        if(!document.getElementById(`rt-step-${i}`)) return;
+        stepEl.style.borderColor="rgba(34,197,94,.3)";
+        stepEl.style.background="rgba(34,197,94,.04)";
+        if(iconEl){ iconEl.style.borderColor="#22c55e"; iconEl.innerHTML="✓"; iconEl.style.color="#22c55e"; iconEl.style.fontSize="11px"; iconEl.style.fontWeight="700"; iconEl.style.animation="none"; }
+      },300);
+
+      // After last step → show results
+      if(i===realtimeSteps.length-1){
+        setTimeout(()=>{
+          const titleEl=document.getElementById("sim-rt-title");
+          const dotEl=document.getElementById("sim-rt-dot");
+          if(titleEl) titleEl.textContent="✅ Simulation Complete";
+          if(dotEl){ dotEl.style.background="#22c55e"; dotEl.style.animation="none"; }
+          // Show attack paths live
+          if(myPaths.length){
+            const plabel=document.getElementById("rt-paths-label");
+            if(plabel) plabel.style.display="block";
+            const container=document.getElementById("rt-live-paths");
+            if(container){
+              myPaths.forEach((p,pi)=>{
+                setTimeout(()=>{
+                  const pc=document.createElement("div");
+                  pc.className=`attack-path-card ${p.severity} mt-8`;
+                  pc.style.opacity="0";
+                  pc.style.transform="translateY(10px)";
+                  pc.style.transition="all .4s ease";
+                  pc.style.cursor="pointer";
+                  pc.onclick=()=>PG.Pages.openPathDetail(p.id);
+                  pc.innerHTML=`${bdg(p.severity)}<div class="path-chain mt-8">${pChain(p.steps)}</div><div style="margin-top:8px;display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--text-muted)">${p.hops} hops</span><span style="font-size:18px;font-weight:900;color:${PG.RiskEngine.getRiskColor(p.risk)}">${p.risk}<span style="font-size:10px;font-weight:400;color:var(--text-muted)">/100</span></span></div>`;
+                  container.appendChild(pc);
+                  requestAnimationFrame(()=>requestAnimationFrame(()=>{ pc.style.opacity="1"; pc.style.transform="translateY(0)"; }));
+                },pi*300);
+              });
+            }
+          }
+          // Show result after paths
+          setTimeout(()=>PG.Pages._showSimResult(identityId,access,scope),myPaths.length*300+400);
+        },500);
+      }
+    },step.delay);
+  });
+};
+
+/* Override the original _runSim to use real-time version */
+PG.Pages._runSim=PG.Pages._runSimRealtime;
+

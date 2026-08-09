@@ -22,6 +22,7 @@ PG.Router = {
     "path-detail":     {page:"page-path-detail",     nav:"nav-attack-paths", render:()=>{}},
     "identities":      {page:"page-identities",      nav:"nav-identities",   render:()=>PG.Pages.renderIdentities()},
     "identity-detail": {page:"page-identity-detail", nav:"nav-identities",   render:()=>{}},
+    "employees":       {page:"page-employees",       nav:"nav-employees",    render:()=>PG.Pages.renderEmployees()},
     "groups":          {page:"page-groups",          nav:"nav-groups",       render:()=>PG.Pages.renderGroups()},
     "cloud-roles":     {page:"page-cloud-roles",     nav:"nav-cloud-roles",  render:()=>PG.Pages.renderCloudRoles()},
     "assets":          {page:"page-assets",          nav:"nav-assets",       render:()=>PG.Pages.renderAssets()},
@@ -145,4 +146,12 @@ PG.boot = function(user, profile, firebaseReady) {
   if(window.innerWidth<=768) document.getElementById("sidebar-toggle")?.style?.setProperty("display","flex");
 
   PG.Router.go("dashboard");
+
+  // Update employee badge count every 5 seconds
+  const _updateEmpBadge = () => {
+    const badge = document.getElementById('emp-count-badge');
+    if (badge) badge.textContent = PG.identities.length;
+  };
+  _updateEmpBadge();
+  setInterval(_updateEmpBadge, 5000);
 };

@@ -151,25 +151,55 @@ section{padding:100px 40px}
 .threat-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
 .threat-graph{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;min-height:360px}
 .threat-graph-title{font-size:13px;font-weight:700;color:var(--text3);margin-bottom:24px;letter-spacing:.5px;text-transform:uppercase}
-.path-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
+.path-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);transition:background .3s,padding .3s;border-radius:8px;padding-left:8px;padding-right:8px;cursor:pointer}
 .path-row:last-child{border-bottom:none}
-.path-node{padding:6px 12px;border-radius:8px;border:1px solid;font-size:12px;font-weight:600;white-space:nowrap}
+.path-row:hover{background:rgba(59,130,246,.04)}
+.path-row.active-path{background:rgba(239,68,68,.06);border-bottom-color:rgba(239,68,68,.2);animation:rowPulse 2s ease-in-out infinite}
+@keyframes rowPulse{0%,100%{background:rgba(239,68,68,.04)}50%{background:rgba(239,68,68,.1)}}
+.path-node{padding:6px 12px;border-radius:8px;border:1px solid;font-size:12px;font-weight:600;white-space:nowrap;transition:all .3s}
 .path-node.identity{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
 .path-node.group{background:#f5f3ff;border-color:#c4b5fd;color:#6d28d9}
 .path-node.asset{background:#fef2f2;border-color:#fca5a5;color:#b91c1c}
 .path-node.role{background:#f0fdf4;border-color:#86efac;color:#166534}
-.path-arrow{font-size:10px;color:var(--text4);flex-shrink:0}
-.path-risk{margin-left:auto;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700}
+.path-arrow{font-size:10px;color:var(--text4);flex-shrink:0;transition:color .3s}
+.path-arrow.active{color:#ef4444;animation:arrowPulse 0.8s ease-in-out infinite}
+@keyframes arrowPulse{0%,100%{opacity:1;transform:translateX(0)}50%{opacity:.5;transform:translateX(2px)}}
+.path-risk{margin-left:auto;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;flex-shrink:0}
 .path-risk.critical{background:#fef2f2;color:#ef4444}
 .path-risk.high{background:#fff7ed;color:#f97316}
 .path-risk.medium{background:#fefce8;color:#ca8a04}
+.path-detect{padding:3px 8px;border-radius:5px;font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.path-detect.detected{background:#fef2f2;color:#ef4444}
+.path-detect.clean{background:#f0fdf4;color:#22c55e}
+.detect-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.detect-dot.blink{animation:detectBlink 1s ease-in-out infinite}
+@keyframes detectBlink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* live sim counter */
+.live-sim-counter{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:100px;font-size:12px;font-weight:700;color:#ef4444;margin-bottom:20px;width:fit-content}
+.live-sim-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulse 1s infinite}
+
 .threat-features{display:flex;flex-direction:column;gap:20px}
 .threat-feature{display:flex;gap:16px;align-items:flex-start}
 .threat-feature-icon{width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1px solid rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .threat-feature-text h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
 .threat-feature-text p{font-size:13px;color:var(--text3);line-height:1.6}
 
-/* ── TESTIMONIALS ────────────────────────────────────────── */
+/* ── IDENTITY CONFIGURATOR ───────────────────────────────────── */
+.id-config{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-top:20px}
+.id-config-title{font-size:13px;font-weight:700;color:var(--text3);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
+.id-config-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.id-config-row{display:flex;flex-direction:column;gap:4px}
+.id-config-row label{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.5px}
+.id-config-row input,.id-config-row select{padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-family:inherit;font-size:12px;color:var(--text);background:var(--bg2);transition:border-color .2s}
+.id-config-row input:focus,.id-config-row select:focus{outline:none;border-color:var(--blue)}
+.id-config-btn{margin-top:12px;padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+.id-config-btn:hover{background:var(--blue2);transform:translateY(-1px)}
+
+/* pulseDot keyframe used in dashboard */
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* ── TESTIMONIALS ────────────────────────────────────────────── */
 #testimonials{background:var(--bg2)}
 .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
 .testimonial-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:.3s}
@@ -226,6 +256,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 40p
   .steps::before{display:none}
   .footer-grid{grid-template-columns:1fr 1fr}
   .cta-box{padding:40px 24px}
+  .id-config-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -470,7 +501,6 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 40p
   </div>
 </section>
 
-<!-- ══════════════════ THREAT SECTION ══════════════════ -->
 <section id="threat">
   <div class="container">
     <div class="threat-layout">
@@ -501,54 +531,65 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:60px 40p
             </div>
           </div>
         </div>
+
+        <!-- Identity Name Configurator -->
+        <div class="id-config" style="margin-top:28px">
+          <div class="id-config-title">🧑 Configure a Threat Identity</div>
+          <div class="id-config-grid">
+            <div class="id-config-row">
+              <label>Employee Name</label>
+              <input type="text" id="cfg-name" placeholder="e.g. Jane Smith" value="John Doe">
+            </div>
+            <div class="id-config-row">
+              <label>Department</label>
+              <select id="cfg-dept">
+                <option value="finance">Finance</option>
+                <option value="engineering">Engineering</option>
+                <option value="hr">HR</option>
+                <option value="operations">Operations</option>
+                <option value="executive">Executive</option>
+              </select>
+            </div>
+            <div class="id-config-row">
+              <label>Target Asset</label>
+              <select id="cfg-asset">
+                <option value="Finance DB">Finance DB</option>
+                <option value="Payroll DB">Payroll DB</option>
+                <option value="Secrets Vault">Secrets Vault</option>
+                <option value="Prod K8s">Prod K8s</option>
+                <option value="HR Portal">HR Portal</option>
+              </select>
+            </div>
+            <div class="id-config-row">
+              <label>Via Group</label>
+              <select id="cfg-group">
+                <option value="Admin Group">Admin Group</option>
+                <option value="IAM Admins">IAM Admins</option>
+                <option value="Cloud Ops">Cloud Ops</option>
+                <option value="DevOps Team">DevOps Team</option>
+                <option value="Org Admins">Org Admins</option>
+              </select>
+            </div>
+          </div>
+          <button class="id-config-btn" onclick="addCustomThreatPath()">+ Add to Live Threat Map</button>
+        </div>
       </div>
 
-      <div class="threat-graph animate-in">
+      <div class="threat-graph animate-in" id="threat-graph-container">
+        <!-- Live sim counter -->
+        <div class="live-sim-counter">
+          <span class="live-sim-dot"></span>
+          <span>Simulation Active — <span id="threat-path-count">5</span> Paths Tracked</span>
+        </div>
         <div class="threat-graph-title">Live Attack Paths</div>
-        <div class="path-row">
-          <div class="path-node identity">John Doe</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node group">Admin Group</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node asset">Finance DB</div>
-          <div class="path-risk critical">96</div>
-        </div>
-        <div class="path-row">
-          <div class="path-node identity">svc-analytics</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node role">Cloud Role</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node asset">S3 Bucket</div>
-          <div class="path-risk high">84</div>
-        </div>
-        <div class="path-row">
-          <div class="path-node identity">Carlos R.</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node group">IAM Admins</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node asset">Payroll DB</div>
-          <div class="path-risk critical">91</div>
-        </div>
-        <div class="path-row">
-          <div class="path-node identity">Maria K.</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node role">DevOps Role</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node asset">Prod K8s</div>
-          <div class="path-risk high">78</div>
-        </div>
-        <div class="path-row">
-          <div class="path-node identity">svc-deploy</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node group">Org Admins</div>
-          <span class="path-arrow">→</span>
-          <div class="path-node asset">GitHub Org</div>
-          <div class="path-risk medium">62</div>
+        <div id="live-paths-list">
+          <!-- paths injected by JS -->
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 <!-- ══════════════════ TESTIMONIALS ══════════════════ -->
 <section id="testimonials">
@@ -675,6 +716,87 @@ setTimeout(() => {
     setTimeout(() => { bar.style.opacity = '1'; }, i * 80);
   });
 }, 800);
+
+/* ═══════════════════════════════════════════
+   REAL-TIME LIVE THREAT MAP SIMULATION
+═══════════════════════════════════════════ */
+const _threatPaths = [
+  {identity:'John Doe',       group:'Admin Group',    asset:'Finance DB',     risk:96, severity:'critical', via:'group'},
+  {identity:'svc-analytics',  group:'Cloud Role',     asset:'S3 Bucket',      risk:84, severity:'high',     via:'role'},
+  {identity:'Carlos Rivera',  group:'IAM Admins',     asset:'Payroll DB',     risk:91, severity:'critical', via:'group'},
+  {identity:'Maria K.',       group:'DevOps Role',    asset:'Prod K8s',       risk:78, severity:'high',     via:'role'},
+  {identity:'svc-deploy',     group:'Org Admins',     asset:'GitHub Org',     risk:62, severity:'medium',   via:'group'},
+];
+
+let _activeIdx = 0;
+let _threatSimRunning = false;
+
+function _renderThreatList() {
+  const container = document.getElementById('live-paths-list');
+  if (!container) return;
+  container.innerHTML = _threatPaths.map((p, i) => {
+    const rClass = p.severity;
+    const viaClass = p.via === 'role' ? 'role' : 'group';
+    const isActive = i === _activeIdx;
+    return `
+    <div class="path-row${isActive ? ' active-path' : ''}" id="tpath-${i}">
+      <div class="path-node identity">${p.identity}</div>
+      <span class="path-arrow${isActive ? ' active' : ''}">→</span>
+      <div class="path-node ${viaClass}">${p.group}</div>
+      <span class="path-arrow${isActive ? ' active' : ''}">→</span>
+      <div class="path-node asset">${p.asset}</div>
+      <div class="path-risk ${rClass}">${p.risk}</div>
+      <div class="path-detect ${isActive ? 'detected' : 'clean'}">
+        <span class="detect-dot${isActive ? ' blink' : ''}"></span>
+        ${isActive ? 'DETECTING' : 'Clean'}
+      </div>
+    </div>`;
+  }).join('');
+  // Update counter
+  const counter = document.getElementById('threat-path-count');
+  if (counter) counter.textContent = _threatPaths.length;
+}
+
+function _stepThreatSim() {
+  _activeIdx = (_activeIdx + 1) % _threatPaths.length;
+  _renderThreatList();
+}
+
+function addCustomThreatPath() {
+  const name  = document.getElementById('cfg-name')?.value.trim()  || 'Unknown';
+  const asset = document.getElementById('cfg-asset')?.value        || 'Finance DB';
+  const group = document.getElementById('cfg-group')?.value        || 'Admin Group';
+  const dept  = document.getElementById('cfg-dept')?.value         || 'finance';
+  const riskMap = {finance:92, executive:88, hr:74, engineering:65, operations:70};
+  const risk = riskMap[dept] || 75;
+  const severity = risk >= 90 ? 'critical' : risk >= 70 ? 'high' : 'medium';
+
+  _threatPaths.push({identity: name, group, asset, risk, severity, via: 'group'});
+  _activeIdx = _threatPaths.length - 1;
+  _renderThreatList();
+
+  // Show toast-like notification
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#ef4444;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(239,68,68,.4);transition:all .3s;transform:translateY(10px);opacity:0';
+  toast.textContent = `⚠ ${name} added to Live Threat Map — Risk: ${risk}`;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => requestAnimationFrame(() => { toast.style.transform='translateY(0)'; toast.style.opacity='1'; }));
+  setTimeout(() => { toast.style.opacity='0'; setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+// Start the simulation when threat section is visible
+const threatObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !_threatSimRunning) {
+      _threatSimRunning = true;
+      _renderThreatList();
+      setInterval(_stepThreatSim, 2500);
+    }
+  });
+}, { threshold: 0.3 });
+
+const tSection = document.getElementById('threat');
+if (tSection) threatObserver.observe(tSection);
 </script>
 </body>
 </html>

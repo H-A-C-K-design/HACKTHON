@@ -255,3 +255,11 @@ body{font-family:var(--font);background:var(--bg-base);color:var(--text-primary)
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){.grid-2,.grid-3,.sim-form,.rem-metrics,.sim-result-grid,.path-before-after,.before-after-grid{grid-template-columns:1fr}}
 @media(max-width:768px){:root{--sidebar-w:0px}#sidebar{transform:translateX(-220px)}#sidebar.open{transform:translateX(0);--sidebar-w:220px}#topbar,#main{margin-left:0!important}.page{padding:14px}}
+
+/* ── PULSE DOT animation (used in employee manager & sim) ── */
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+/* ── EMPLOYEE MANAGER ─────────────────────────────────────── */
+#emp-modal-overlay{display:flex}
+.emp-modal-overlay-open{display:flex!important}
+
