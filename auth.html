@@ -420,7 +420,7 @@ let auth, db, gProvider;
 if (FB_READY) {
   const app = initializeApp(FB);
   auth      = getAuth(app);
-  db        = getFirestore(app, injected.databaseId || "indentity");
+  db        = getFirestore(app, "indentity");
   gProvider = new GoogleAuthProvider();
 
   // Handle Google redirect result
