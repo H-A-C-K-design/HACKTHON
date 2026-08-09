@@ -3,7 +3,7 @@ module.exports = (req, res) => {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
   
   const config = {
-    apiKey:            process.env.FIREBASE_API_KEY            || "AIzaSyCW6Yt-YON91wS9d830oCsBu65KqpdrPnQ",
+    apiKey:            process.env.FIREBASE_API_KEY            || "AIzaSyBJsXHPvHbo1yj20_rCJvcPcUp_9wLYuHM",
     authDomain:        process.env.FIREBASE_AUTH_DOMAIN        || "identity-security-58adc.firebaseapp.com",
     projectId:         process.env.FIREBASE_PROJECT_ID         || "identity-security-58adc",
     storageBucket:     process.env.FIREBASE_STORAGE_BUCKET     || "identity-security-58adc.firebasestorage.app",

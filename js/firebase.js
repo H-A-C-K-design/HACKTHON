@@ -36,7 +36,7 @@ const cfg = {
   storageBucket:     "identity-security-58adc.appspot.com",
   databaseId:        _injected.databaseId        || "indentity",
   // These 3 come from .env → serve.ps1 → firebase-config.js injection:
-  apiKey:            _injected.apiKey            || "",
+  apiKey:            _injected.apiKey            || "AIzaSyBJsXHPvHbo1yj20_rCJvcPcUp_9wLYuHM",
   messagingSenderId: _injected.messagingSenderId || "",
   appId:             _injected.appId             || "",
   measurementId:     _injected.measurementId     || "",

@@ -1,6 +1,6 @@
 // Static fallback for production hosting
 window.__PATHGUARD_CONFIG__ = window.__PATHGUARD_CONFIG__ || {
-  apiKey:            "AIzaSyCW6Yt-YON91wS9d830oCsBu65KqpdrPnQ",
+  apiKey:            "AIzaSyBJsXHPvHbo1yj20_rCJvcPcUp_9wLYuHM",
   authDomain:        "identity-security-58adc.firebaseapp.com",
   projectId:         "identity-security-58adc",
   storageBucket:     "identity-security-58adc.firebasestorage.app",
