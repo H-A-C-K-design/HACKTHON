@@ -388,20 +388,18 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ── Firebase Config ──────────────────────────────────────────
-const injected = window.__PATHGUARD_CONFIG__ || {};
+// ── Firebase Config (hardcoded — safe, these are public client-side keys) ──
 const FB = {
-  projectId:         injected.projectId         || "identity-security-58adc",
-  authDomain:        injected.authDomain        || "identity-security-58adc.firebaseapp.com",
-  storageBucket:     injected.storageBucket     || "identity-security-58adc.firebasestorage.app",
-  apiKey:            injected.apiKey            || "AIzaSyCW6Yt-YON91wS9d830oCsBu65KqpdrPnQ",
-  messagingSenderId: injected.messagingSenderId || "905091909481",
-  appId:             injected.appId             || "1:905091909481:web:f783fd453dc923919d1ff8",
-  measurementId:     injected.measurementId     || "G-77S2KQK0L0"
+  apiKey:            "AIzaSyCW6Yt-YON91wS9d830oCsBu65KqpdrPnQ",
+  authDomain:        "identity-security-58adc.firebaseapp.com",
+  projectId:         "identity-security-58adc",
+  storageBucket:     "identity-security-58adc.firebasestorage.app",
+  messagingSenderId: "905091909481",
+  appId:             "1:905091909481:web:f783fd453dc923919d1ff8",
+  measurementId:     "G-77S2KQK0L0"
 };
 
-const PLACEHOLDER = ["","PASTE_YOUR_WEB_API_KEY_HERE","YOUR_API_KEY","GET_FROM_CONSOLE"];
-const FB_READY = !!FB.apiKey && !PLACEHOLDER.includes(FB.apiKey) && !!FB.appId && !PLACEHOLDER.includes(FB.appId);
+const FB_READY = true; // all keys are hardcoded above
 
 // ── Status badge ─────────────────────────────────────────────
 const statusEl  = document.getElementById("fb-status");

@@ -28,7 +28,7 @@ PG.Pages.renderDashboard=function(){
       <span style="color:var(--accent-blue)">⚡ Quick Actions:</span>
       <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('simulator')">⚡ Run Simulation</button>
       <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('identities')">👤 View Identities</button>
-      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('paths')">🎯 Attack Paths</button>
+      <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('attack-paths')">🎯 Attack Paths</button>
       <button class="btn btn-secondary btn-sm" onclick="PG.Router.go('remediation')">🛡️ Remediation</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
